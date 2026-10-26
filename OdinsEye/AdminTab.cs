@@ -120,9 +120,32 @@ namespace OdinsEye
             y += Widgets.RowH;
             Widgets.CommandRow(x, ref y, w, new[] { "Put out fires", "Clear smoke" }, new[] { "stopfire", "stopsmoke" });
 
-            Widgets.Header(x, ref y, w, "Gear");
-            Widgets.CommandRow(x, ref y, w, new[] { "Repair all your gear" }, new[] { "repairall" });
+            Widgets.Header(x, ref y, w, "Repair");
+            Widgets.Command(new Rect(x, y, half, Widgets.RowH - 4f), "Your gear", "repairall");
+            bool was = GUI.enabled;
+            GUI.enabled = was && Cheats.Allowed;
+            if (GUI.Button(new Rect(x + half + 6f, y, half, Widgets.RowH - 4f), new GUIContent($"Buildings within {RepairRange:0} m", Widgets.OwnCheat)))
+                RepairBuildings();
+            GUI.enabled = was;
+            y += Widgets.RowH;
             return y;
+        }
+
+        const float RepairRange = 30f;
+
+        // The game has no command for this: the same repair the hammer does, on every damaged piece around you.
+        static void RepairBuildings()
+        {
+            GUIUtility.keyboardControl = 0;
+            var player = Player.m_localPlayer;
+            if (player == null) return;
+            Vector3 p = player.transform.position;
+            int count = 0;
+            foreach (var piece in WearNTear.GetAllInstances())
+                if (piece != null && Vector3.Distance(piece.transform.position, p) <= RepairRange && piece.Repair()) count++;
+            Commands.LastCommand = "Repair buildings";
+            Commands.LastOutput = count == 0 ? "nothing needed repairing" : $"repaired {count} pieces";
+            player.Message(MessageHud.MessageType.TopLeft, $"Repaired {count} pieces");
         }
     }
 }

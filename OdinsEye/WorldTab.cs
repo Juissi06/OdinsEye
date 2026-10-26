@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
@@ -74,6 +75,9 @@ namespace OdinsEye
             y += 26f;
             Widgets.CommandRow(x, ref y, w, new[] { "Set wind", "Normal wind" },
                 new[] { $"wind {F(_windAngle)} {F(_windStrength)}", "resetwind" });
+
+            y += 6f;
+            y = Modifiers(x, y, w);
             return y;
         }
 
@@ -120,6 +124,123 @@ namespace OdinsEye
                 float cx = x + (i % 2) * (half + 6f);
                 Widgets.Switch(new Rect(cx, y + 4f, half, 24f), BossNames[i], on, "setkey " + BossKeys[i], "removekey " + BossKeys[i]);
                 if (i % 2 == 1 || i == BossKeys.Length - 1) y += 28f;
+            }
+
+            y += 6f;
+            y = Keys(x, y, w);
+            return y;
+        }
+
+        // ---------- World modifiers (as on the world creation screen) ----------
+
+        // Each modifier with the options the world creation screen offers for it, easiest to hardest.
+        static readonly string[][] ModifierOptions =
+        {
+            new[] { "Combat", "VeryEasy", "Easy", "Default", "Hard", "VeryHard" },
+            new[] { "DeathPenalty", "Casual", "VeryEasy", "Easy", "Default", "Hard", "Hardcore" },
+            new[] { "Resources", "MuchLess", "Less", "Default", "More", "MuchMore", "Most" },
+            new[] { "Raids", "None", "MuchLess", "Less", "Default", "More", "MuchMore" },
+            new[] { "Portals", "Casual", "Default", "Hard", "VeryHard" },
+        };
+        static readonly string[] Presets = { "Normal", "Casual", "Easy", "Hard", "Hardcore", "Immersive", "Hammer" };
+
+        static float Modifiers(float x, float y, float w)
+        {
+            Widgets.Header(x, ref y, w, "World modifiers");
+            Widgets.Note(x, ref y, w, "Like the world creation screen. Only the host.");
+            foreach (var m in ModifierOptions)
+            {
+                Ui.Label(new Rect(x, y, w, 20f), Spaced(m[0]), Ui.Small);
+                y += 20f;
+                int n = m.Length - 1;
+                float bw = (w - (n - 1) * 4f) / n;
+                for (int i = 1; i <= n; i++)
+                    Widgets.Command(new Rect(x + (i - 1) * (bw + 4f), y, bw, 24f), Short(m[i]), $"setworldmodifier {m[0]} {m[i]}");
+                y += 28f;
+            }
+            Ui.Label(new Rect(x, y, w, 20f), "Presets", Ui.Small);
+            y += 20f;
+            float pw = (w - 3 * 4f) / 4f;
+            for (int i = 0; i < Presets.Length; i++)
+                Widgets.Command(new Rect(x + i % 4 * (pw + 4f), y + i / 4 * 28f, pw, 24f), Presets[i], "setworldpreset " + Presets[i],
+                    $"Reset every world modifier to the {Presets[i]} preset?");
+            y += 56f;
+            Widgets.Command(new Rect(x, y, w, 24f), "All modifiers back to default", "resetworldkeys", "Reset every world modifier to default?");
+            return y + 30f;
+        }
+
+        static string Short(string option)
+        {
+            switch (option)
+            {
+                case "VeryEasy": return "V. easy";
+                case "VeryHard": return "V. hard";
+                case "MuchLess": return "Much less";
+                case "MuchMore": return "Much more";
+                case "Default": return "Normal";
+                default: return option;
+            }
+        }
+
+        static string Spaced(string name) => name == "DeathPenalty" ? "Death penalty" : name;
+
+        // ---------- World keys ----------
+
+        static readonly List<string> AllKeys = new List<string>();
+        static string _keyText = "";
+        static Vector2 _keyScroll;
+        const string KeyControl = "OdinsEye_WorldKey";
+
+        // Every global key the world has right now (boss kills, world modifiers, events), and any key to add.
+        static float Keys(float x, float y, float w)
+        {
+            Widgets.Header(x, ref y, w, "World keys");
+            var zones = ZoneSystem.instance;
+            var keys = zones != null ? zones.GetGlobalKeys() : new List<string>();
+            const float itemH = 24f;
+            var area = new Rect(x, y, w, ListH);
+            Ui.Inset(area);
+            var view = new Rect(0f, 0f, w - 20f, Mathf.Max(1, keys.Count) * itemH);
+            _keyScroll = GUI.BeginScrollView(new Rect(area.x + 2f, area.y + 2f, area.width - 4f, area.height - 4f), _keyScroll, view);
+            if (keys.Count == 0) Ui.Label(new Rect(6f, 0f, view.width, itemH), $"<color={Ui.Muted}>No world keys yet.</color>", Ui.Small);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                var row = new Rect(0f, i * itemH, view.width, itemH - 2f);
+                Ui.Label(new Rect(row.x + 6f, row.y, row.width - 80f, row.height), keys[i], Ui.Small);
+                string name = keys[i].Split(' ')[0];
+                Widgets.Command(new Rect(row.xMax - 74f, row.y, 74f, row.height), "Remove", "removekey " + name);
+            }
+            GUI.EndScrollView();
+            y += ListH + 6f;
+
+            GUI.SetNextControlName(KeyControl);
+            _keyText = GUI.TextField(new Rect(x, y, w - 80f, 24f), _keyText ?? "", 60);
+            Menu.SearchFocused = GUI.GetNameOfFocusedControl() == KeyControl;
+            if (string.IsNullOrEmpty(_keyText) && !Menu.SearchFocused)
+                Ui.Label(new Rect(x + 8f, y, w - 80f, 24f), $"<color={Ui.Muted}>Key and value, e.g. EnemyDamage 200</color>", Ui.Small);
+            bool was = GUI.enabled;
+            GUI.enabled = was && _keyText.Trim().Length > 0;
+            if (Widgets.Command(new Rect(x + w - 74f, y, 74f, 24f), "Set", "setkey " + _keyText.Trim())) _keyText = "";
+            GUI.enabled = was;
+            y += 28f;
+
+            // Matching names from the game's list, to click instead of typing.
+            string q = _keyText.Trim().Split(' ')[0].ToLowerInvariant();
+            if (q.Length > 0)
+            {
+                if (AllKeys.Count == 0)
+                    foreach (var k in System.Enum.GetNames(typeof(GlobalKeys)))
+                        if (k != "NonServerOption" && k != "Count") AllKeys.Add(k);
+                float bx = x;
+                foreach (var k in AllKeys)
+                {
+                    if (!k.ToLowerInvariant().Contains(q) || k.ToLowerInvariant() == q) continue;
+                    float kw = GUI.skin.button.CalcSize(new GUIContent(k)).x + 8f;
+                    if (bx + kw > x + w) break;
+                    if (GUI.Button(new Rect(bx, y, kw, 22f), new GUIContent(k, "~Fill in " + k))) _keyText = k + " ";
+                    bx += kw + 4f;
+                }
+                y += 26f;
             }
             return y;
         }

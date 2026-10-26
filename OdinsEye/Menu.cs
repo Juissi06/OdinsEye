@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace OdinsEye
 {
-    internal enum Tab { Player, Skills, Buffs, Spawn, World, Teleport, Admin, Inspect, Custom }
+    internal enum Tab { Player, Skills, Buffs, Spawn, World, Teleport, Creatures, Admin, Inspect, Custom }
 
     // The Odin's Eye window: a wood panel with tabs, a line saying what the game currently allows, the tab's
     // content, and the last command with what the game answered.
@@ -13,7 +13,7 @@ namespace OdinsEye
     {
         const float W = 840f, H = 560f, Pad = 18f, TitleH = 34f, TabsH = 32f, BannerH = 34f, FooterH = 26f;
 
-        static readonly Tab[] Tabs = { Tab.Player, Tab.Skills, Tab.Buffs, Tab.Spawn, Tab.World, Tab.Teleport, Tab.Admin, Tab.Inspect, Tab.Custom };
+        static readonly Tab[] Tabs = { Tab.Player, Tab.Skills, Tab.Buffs, Tab.Spawn, Tab.World, Tab.Teleport, Tab.Creatures, Tab.Admin, Tab.Inspect, Tab.Custom };
 
         internal static bool IsOpen { get; private set; }
         internal static bool SearchFocused; // set by tabs with a search box, so the menu key can be typed there
@@ -231,6 +231,7 @@ namespace OdinsEye
                 case Tab.Admin: AdminTab.Draw(r); break;
                 case Tab.Inspect: InspectTab.Draw(r); break;
                 case Tab.Custom: CustomTab.Draw(r); break;
+                case Tab.Creatures: CreaturesTab.Draw(r); break;
             }
         }
 

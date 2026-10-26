@@ -5,7 +5,8 @@ using UnityEngine;
 namespace OdinsEye
 {
     // Skills tab: every skill with its level. Pick one to set its level ("raiseskill" by the difference, since the
-    // game has no "set" command) or reset it; on the right, Odin's Eye's own learning cheats.
+    // game has no "set" command) or reset it; on the right, Odin's Eye's own learning cheats. Skills added by other
+    // mods are listed too: the console can't find them by name, so their buttons are Odin's Eye's own.
     internal static class SkillsTab
     {
         const float ListW = 470f, RowH = 30f, Gap = 14f;
@@ -17,6 +18,9 @@ namespace OdinsEye
         static Skills.SkillType _selected = Skills.SkillType.None;
         static int _target;
         static Vector2 _scroll;
+
+        static readonly Func<Skills, Skills.SkillType, Skills.Skill> GetSkill =
+            HarmonyLib.AccessTools.MethodDelegate<Func<Skills, Skills.SkillType, Skills.Skill>>(HarmonyLib.AccessTools.Method(typeof(Skills), "GetSkill"));
 
         internal static void Draw(Rect r)
         {
@@ -34,22 +38,27 @@ namespace OdinsEye
             DrawLearning(right.x, y + 10f, right.width);
         }
 
-        // Only the game's own skills: the console finds skills by their name in Skills.SkillType, so skills
-        // added by other mods can't be set with it.
+        static bool Modded(Skills.SkillType type) => !Enum.IsDefined(typeof(Skills.SkillType), type);
+
         static void Build(Skills skills)
         {
             if (skills == _builtFor) return;
             _builtFor = skills;
             Shown.Clear();
             foreach (var def in skills.m_skills)
-                if (def != null && def.m_skill != Skills.SkillType.None && def.m_skill != Skills.SkillType.All &&
-                    Enum.IsDefined(typeof(Skills.SkillType), def.m_skill))
+                if (def != null && def.m_skill != Skills.SkillType.None && def.m_skill != Skills.SkillType.All && !Shown.Exists(d => d.m_skill == def.m_skill))
                     Shown.Add(def);
             Shown.Sort((a, b) => string.CompareOrdinal(Name(a.m_skill), Name(b.m_skill)));
             if (_selected == Skills.SkillType.None && Shown.Count > 0) Select(Shown[0].m_skill);
         }
 
-        static string Name(Skills.SkillType type) => Localization.instance.Localize("$skill_" + type.ToString().ToLower());
+        // Modded skills' enum value has no name, so ToString gives their number: "$skill_<number>", which is the
+        // key Jotunn registers their name under.
+        static string Name(Skills.SkillType type)
+        {
+            string name = Localization.instance.Localize("$skill_" + type.ToString().ToLower());
+            return name.StartsWith("[") || name.StartsWith("$") ? $"Modded skill {(int)type}" : name;
+        }
 
         static float BaseLevel(Skills.SkillType type) => Levels.TryGetValue(type, out var s) ? s.m_level : 0f;
 
@@ -117,12 +126,69 @@ namespace OdinsEye
             y += 48f;
 
             _target = Mathf.RoundToInt(GUI.HorizontalSlider(new Rect(x, y + 8f, w - 110f, 16f), _target, 0f, 100f));
-            Widgets.Command(new Rect(x + w - 100f, y, 100f, Widgets.RowH - 4f), $"Set to {_target}", $"raiseskill {id} {_target - level}");
+            int target = _target;
+            Act(new Rect(x + w - 100f, y, 100f, Widgets.RowH - 4f), $"Set to {target}", $"raiseskill {id} {target - level}", () => SetLevel(skills, type, target));
             y += Widgets.RowH;
-            Widgets.CommandRow(x, ref y, w, new[] { "-10", "-1", "+1", "+10" },
-                new[] { $"raiseskill {id} -10", $"raiseskill {id} -1", $"raiseskill {id} 1", $"raiseskill {id} 10" });
-            Widgets.CommandRow(x, ref y, w, new[] { "Max (100)", "Reset to 0" }, new[] { $"raiseskill {id} 100", $"resetskill {id}" });
+            int[] steps = { -10, -1, 1, 10 };
+            float sw = (w - 3 * 6f) / 4f;
+            for (int i = 0; i < steps.Length; i++)
+            {
+                int delta = steps[i];
+                string label = delta > 0 ? "+" + delta : delta.ToString();
+                Act(new Rect(x + i * (sw + 6f), y, sw, Widgets.RowH - 4f), label, $"raiseskill {id} {delta}",
+                    () => SetLevel(skills, type, BaseLevel(type) + delta));
+            }
+            y += Widgets.RowH;
+            float hw = (w - 6f) * 0.5f;
+            Act(new Rect(x, y, hw, Widgets.RowH - 4f), "Max (100)", $"raiseskill {id} 100", () => SetLevel(skills, type, 100f));
+            Act(new Rect(x + hw + 6f, y, hw, Widgets.RowH - 4f), "Reset to 0", $"resetskill {id}", () => skills.ResetSkill(type));
+            y += Widgets.RowH;
+
+            // This skill's own learning speed, or "All" to follow the speed for every skill.
+            Ui.Label(new Rect(x, y, 60f, 26f), "Learns", Ui.Small);
+            bool hasOwn = Cheats.SkillSpeeds.TryGetValue(type, out float own);
+            bool was = GUI.enabled;
+            GUI.enabled = was && Cheats.Allowed;
+            float cx = x + 60f, cw = (w - 60f - Multipliers.Length * 3f) / (Multipliers.Length + 1);
+            if (Widgets.Choice(new Rect(cx, y, cw, 26f), "All", !hasOwn, "~Learns at the speed for all skills (below)")) Cheats.SetSkillSpeed(type, null);
+            for (int i = 0; i < Multipliers.Length; i++)
+            {
+                float m = Multipliers[i];
+                if (Widgets.Choice(new Rect(cx + (i + 1) * (cw + 3f), y, cw, 26f), $"x{m:0}", hasOwn && Mathf.Approximately(own, m), "~This skill's own learning speed"))
+                    Cheats.SetSkillSpeed(type, m);
+            }
+            GUI.enabled = was;
+            y += 30f;
             return y;
+        }
+
+        // A console button for the game's own skills; for modded ones the console can't find, the same action done
+        // by Odin's Eye (only while cheats are on, like everything else).
+        static void Act(Rect r, string label, string line, Action own)
+        {
+            if (!Modded(_selected))
+            {
+                Widgets.Command(r, label, line);
+                return;
+            }
+            bool was = GUI.enabled;
+            GUI.enabled = was && Cheats.Allowed;
+            if (GUI.Button(r, new GUIContent(label, Widgets.OwnCheat)))
+            {
+                GUIUtility.keyboardControl = 0;
+                own();
+            }
+            GUI.enabled = was;
+        }
+
+        static void SetLevel(Skills skills, Skills.SkillType type, float level)
+        {
+            if (GetSkill == null) return;
+            var skill = GetSkill(skills, type);
+            skill.m_level = Mathf.Clamp(Mathf.Floor(level), 0f, 100f);
+            skill.m_accumulator = 0f;
+            Commands.LastCommand = $"{Name(type)} level";
+            Commands.LastOutput = $"set to {skill.m_level:0}";
         }
 
         // ---------- Right: learning cheats ----------
@@ -130,7 +196,7 @@ namespace OdinsEye
         static void DrawLearning(float x, float y, float w)
         {
             Widgets.Header(x, ref y, w, "Learning");
-            Ui.Label(new Rect(x, y, 90f, 26f), "Learn faster", Ui.Small);
+            Ui.Label(new Rect(x, y, 90f, 26f), "All skills", Ui.Small);
             float bx = x + 92f, bw = (w - 92f - (Multipliers.Length - 1) * 4f) / Multipliers.Length;
             bool was = GUI.enabled;
             GUI.enabled = was && Cheats.Allowed;
@@ -148,10 +214,10 @@ namespace OdinsEye
             y += 30f;
 
             string note;
-            if (!Cheats.Allowed) note = "These two are Odin's Eye's own cheats: they work once cheats are on.";
+            if (!Cheats.Allowed) note = "Learning speeds and keeping skills are Odin's Eye's own cheats: they work once cheats are on.";
             else if (!Mathf.Approximately(Game.m_skillGainRate, 1f)) note = $"The world's own skill speed is x{Game.m_skillGainRate:0.##}; this multiplies on top.";
             else note = "Odin's Eye's own cheats: they stop when dev commands are turned off.";
-            GUI.Label(new Rect(x, y, w, 64f), $"<color={Ui.Muted}>{note}</color>", Widgets.Wrap);
+            GUI.Label(new Rect(x, y, w, 48f), $"<color={Ui.Muted}>{note}</color>", Widgets.Wrap);
         }
     }
 }

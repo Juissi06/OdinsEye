@@ -1,6 +1,12 @@
 # Changelog
 
 ## Unreleased
+- Creatures tab: tame, make neutrals angry, kill tames, passive monsters, freeze creatures, and a list of creatures nearby to tame, untame or kill.
+- Spawn creatures already tamed; bosses ask before spawning.
+- World tab: world modifiers and presets like the world creation screen, and every world key to see, set or remove.
+- Admin tab: repair every building within 30 m.
+- Ship speed slider (Fun): faster sailing and rowing on the ship you steer.
+- Skills: a learning speed for each skill on its own, and skills added by other mods can be set too.
 - The mouse wheel no longer zooms the camera while the window is open.
 - Switches that are on now show green, box and label, and no longer leave a grey bar after you click them. Longer notes no longer get cut off.
 - Custom tab: make your own buttons from any console line, or several separated by ";".

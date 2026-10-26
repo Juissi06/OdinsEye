@@ -22,7 +22,7 @@ namespace OdinsEye
             internal Sprite Icon;
             internal Category Category;
             internal int MaxQuality = 1, MaxStack = 1;
-            internal bool Creature;
+            internal bool Creature, Boss;
         }
 
         const float CatW = 118f, DetailW = 230f, Cell = 54f, Gap = 10f, SearchH = 28f;
@@ -39,7 +39,7 @@ namespace OdinsEye
         static string _selectedSet;
         static Vector2 _scroll;
         static int _amount = 1, _level = 1;
-        static bool _toInventory = true;
+        static bool _toInventory = true, _tamed;
 
         // Favourites are kept in the config (prefab names); recent spawns only for this session, newest first.
         static readonly List<string> Recent = new List<string>();
@@ -127,7 +127,7 @@ namespace OdinsEye
                     Entries.Add(new Entry
                     {
                         Prefab = prefab.name, Name = name, Search = (name + " " + prefab.name).ToLowerInvariant(),
-                        Category = Category.Creatures, MaxQuality = 3, Creature = true
+                        Category = Category.Creatures, MaxQuality = 3, Creature = true, Boss = character.m_boss
                     });
                 }
 
@@ -325,13 +325,35 @@ namespace OdinsEye
                 _toInventory = GUI.Toggle(new Rect(x, y + 2f, w, 24f), _toInventory, "Straight into inventory");
                 y += 30f;
             }
+            else if (!e.Boss)
+            {
+                _tamed = Widgets.CheatSwitch(new Rect(x, y + 2f, w, 24f), "Tamed", _tamed);
+                y += 30f;
+            }
 
             string line = $"spawn {e.Prefab} {_amount} {_level}" + (!e.Creature && _toInventory ? " 0.5 p" : "");
             float by = r.yMax - 10f - 34f;
-            if (Widgets.Command(new Rect(x, by, w, 34f), e.Creature ? $"Spawn {_amount} in front of you" : $"Spawn {_amount}", line))
+            string spawnLabel = e.Creature ? $"Spawn {_amount} in front of you" : $"Spawn {_amount}";
+            string note = !e.Creature ? "Spawns in front of you."
+                : e.Boss ? "A boss: it fights hard and can wreck buildings. Asks first."
+                : _tamed && Cheats.Allowed ? "Spawns tamed: friendly, and follows you like a tamed animal if it can."
+                : "Spawns hostile in front of you.";
+            if (e.Creature && !e.Boss && _tamed && Cheats.Allowed)
+            {
+                // spawn creates them right away, and new characters join the end of the game's list.
+                var all = Character.GetAllCharacters();
+                int before = all.Count;
+                if (Widgets.Command(new Rect(x, by, w, 34f), spawnLabel, line))
+                {
+                    for (int i = before; i < all.Count; i++)
+                        if (all[i] != null && !all[i].IsPlayer()) CreaturesTab.SetTamed(all[i], true);
+                    Remember(e.Prefab);
+                }
+            }
+            else if (Widgets.Command(new Rect(x, by, w, 34f), spawnLabel, line,
+                         e.Boss ? $"Spawn {e.Name}? Bosses fight hard and can wreck buildings." : null))
                 Remember(e.Prefab);
-            GUI.Label(new Rect(x, y, w, by - y - 4f),
-                $"<color={Ui.Muted}>Spawns in front of you{(e.Creature ? ". Creatures spawn hostile unless tamed." : ".")}</color>", Widgets.Wrap);
+            GUI.Label(new Rect(x, y, w, by - y - 4f), $"<color={Ui.Muted}>{note}</color>", Widgets.Wrap);
         }
 
         // ---------- Item sets ----------

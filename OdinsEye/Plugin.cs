@@ -26,7 +26,8 @@ namespace OdinsEye
         internal static ConfigEntry<KeyboardShortcut> KeyGod, KeyGhost, KeyFly, KeyNoCost, KeyBack;
         internal static ConfigEntry<float> XpMultiplier;
         internal static ConfigEntry<bool> KeepSkills;
-        internal static ConfigEntry<float> FunSize, FunJump, FunSpeed;
+        internal static ConfigEntry<string> SkillSpeeds;
+        internal static ConfigEntry<float> FunSize, FunJump, FunSpeed, FunShip;
         internal static ConfigEntry<bool> FunStamina, FunNoWeight, FunNoWear, FunNoFall, FunNightVision, FunOneHit, FunKnockback, FunInstantCraft;
         internal static ManualLogSource Log;
 
@@ -53,10 +54,13 @@ namespace OdinsEye
             KeyBack = Config.Bind("Hotkeys", "Back", KeyboardShortcut.Empty, "Teleports back to where you were before your last teleport.");
             XpMultiplier = Config.Bind("Cheats", "Skill speed", 1f,
                 new ConfigDescription("Skills level this many times faster. Only while cheats are on.", new AcceptableValueRange<float>(0f, 100f)));
+            SkillSpeeds = Config.Bind("Cheats", "Skill speed per skill", "",
+                "Skills with their own speed instead of \"Skill speed\", as skill number=speed, comma-separated. Set from the Skills tab.");
             KeepSkills = Config.Bind("Cheats", "Keep skills on death", false, "Dying doesn't lower your skills. Only while cheats are on.");
             FunSize = Config.Bind("Fun", "Size", 1f, new ConfigDescription("Your size. Other players see your normal size.", new AcceptableValueRange<float>(0.25f, 4f)));
             FunJump = Config.Bind("Fun", "Jump", 1f, new ConfigDescription("Jump strength.", new AcceptableValueRange<float>(1f, 10f)));
             FunSpeed = Config.Bind("Fun", "Speed", 1f, new ConfigDescription("Walking, running, crouching and swimming speed.", new AcceptableValueRange<float>(1f, 5f)));
+            FunShip = Config.Bind("Fun", "Ship speed", 1f, new ConfigDescription("Sailing and rowing speed of the ship you steer.", new AcceptableValueRange<float>(1f, 5f)));
             FunStamina = Config.Bind("Fun", "Infinite stamina", false, "Nothing uses stamina.");
             FunNoWeight = Config.Bind("Fun", "No weight limit", false, "Never overweight.");
             FunNoWear = Config.Bind("Fun", "No wear", false, "Tools, weapons and armour stay at full durability.");

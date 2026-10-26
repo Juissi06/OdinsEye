@@ -12,6 +12,11 @@ namespace OdinsEye
         internal static float Size => Cheats.Allowed ? Plugin.FunSize.Value : 1f;
         internal static float Jump => Cheats.Allowed ? Plugin.FunJump.Value : 1f;
         internal static float Speed => Cheats.Allowed ? Plugin.FunSpeed.Value : 1f;
+        internal static float ShipSpeed => Cheats.Allowed ? Plugin.FunShip.Value : 1f;
+
+        // The ship you're steering and its own forces, put back when you let go of the rudder.
+        Ship _ship;
+        float _sailForce, _rowForce;
 
         // The player's own values, kept so the multipliers never stack and can be undone. Nothing is touched
         // while every multiplier is 1, so other mods that change these values aren't overridden.
@@ -59,6 +64,8 @@ namespace OdinsEye
                 _scaled = size != 1f;
             }
 
+            UpdateShip(player.GetControlledShip());
+
             // No wear: keep everything you carry at full durability, a couple of times a second.
             _repairTimer -= Time.deltaTime;
             if (_repairTimer <= 0f && On(Plugin.FunNoWear))
@@ -68,6 +75,30 @@ namespace OdinsEye
                     if (item.m_shared.m_useDurability && item.m_durability < item.GetMaxDurability())
                         item.m_durability = item.GetMaxDurability();
             }
+        }
+
+        // Ship speed: more sail force (Ship.GetSailForce) and rowing force while you steer. The ship's drag
+        // grows with speed, so the top speed rises with the force without running away.
+        void UpdateShip(Ship ship)
+        {
+            if (ship != _ship)
+            {
+                if (_ship != null)
+                {
+                    _ship.m_sailForceFactor = _sailForce;
+                    _ship.m_backwardForce = _rowForce;
+                }
+                _ship = ship;
+                if (ship != null)
+                {
+                    _sailForce = ship.m_sailForceFactor;
+                    _rowForce = ship.m_backwardForce;
+                }
+            }
+            if (ship == null) return;
+            float m = ShipSpeed;
+            ship.m_sailForceFactor = _sailForce * m;
+            ship.m_backwardForce = _rowForce * m;
         }
     }
 

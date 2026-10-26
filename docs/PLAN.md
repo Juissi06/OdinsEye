@@ -59,18 +59,23 @@ off with dev commands.
 - [x] **Night vision:** brighter ambient light at night and in caves.
 - [x] **Instant crafting:** no crafting time at the workbench and other stations. No materials: the game's own "no build cost" already covers crafting.
 
-### Sailing (new)
-- **Ship speed multiplier** for sailing and rowing while you steer. Seaworthy changes sailing too, so: when Seaworthy is installed, multiply its result instead of replacing it, and say so in the window.
+### Sailing (new; done in 0.2)
+- [x] **Ship speed** slider in the Fun column: more sail and rowing force on the ship you steer, put back when you let go. Odin's Eye and Seaworthy are separate mods for separate purposes, so no special handling for Seaworthy.
 
-### Creatures (console and new)
-- **Tame everything nearby** (console: `tame`), and an option to spawn creatures already tamed.
-- **Make nearby creatures calm or angry**, **freeze AI** (new): handy for building screenshots and testing.
-- **Spawn bosses** at their altar or in front of you, with a warning.
+### Creatures (console and new; done in 0.2, Creatures tab)
+- [x] **Tame** (console: `tame`; the game tames every loaded tameable, not only nearby ones), **spawn creatures already tamed** (Spawn tab, not bosses).
+- [x] **Calm or angry:** "Passive monsters" switch (the game's `PassiveMobs` world key) and "Make neutral creatures angry" (`aggravate`). **Freeze creatures** (new, session only).
+- [x] **Spawn bosses** with a warning (Spawn tab asks first).
+- [x] **Nearby list** (new): creatures within 40 m with stars, tamed, health and distance; tame, untame or kill each one.
 
-### World
-- **World modifiers** (console): combat difficulty, resource rate, raid frequency, portals and so on, as on the world creation screen (`setworldmodifier`, `setworldpreset`). Only the host.
-- **All world keys** (console): not just bosses, every key the game uses, with search (`listkeys`, `setkey`, `removekey`).
-- **Repair buildings around you** (new): the game only has a command for your gear.
+### World (done in 0.2)
+- [x] **World modifiers** (console): each modifier with its options, the presets, back to default (`setworldmodifier`, `setworldpreset`, `resetworldkeys`). Only the host. The window doesn't show which option is current yet.
+- [x] **All world keys** (console): every current key with Remove, and set any key with matching names to click (`setkey`, `removekey`).
+- [x] **Repair buildings around you** (new, Admin tab): the hammer's repair on every damaged piece within 30 m.
+
+### Smaller extras (done in 0.2)
+- [x] **Learning speed per skill**, on top of the speed for all skills ("Skill speed per skill" in the config).
+- [x] **Modded skills** are listed and can be set; their buttons are Odin's Eye's own since the console can't find them.
 
 ### Player and character
 - **Appearance** (console): change hair, beard and body model on the spot (`hair`, `beard`, `model`).

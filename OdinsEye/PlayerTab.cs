@@ -78,6 +78,7 @@ namespace OdinsEye
             Slider(x, ref y, w, "Size", Plugin.FunSize, 0.25f, 4f, 0.05f);
             Slider(x, ref y, w, "Jump", Plugin.FunJump, 1f, 10f, 0.5f);
             Slider(x, ref y, w, "Speed", Plugin.FunSpeed, 1f, 5f, 0.25f);
+            Slider(x, ref y, w, "Ship", Plugin.FunShip, 1f, 5f, 0.25f);
             GUI.enabled = was;
             y += 6f;
 
