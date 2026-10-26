@@ -51,17 +51,17 @@ namespace OdinsEye
             GUI.enabled = true;
             y += 44f;
 
-            // The game's own escape hatch (PlayerProfile.s_bypassCheatChecks, saved on the character): things you
-            // spawn or build while it's on aren't marked as cheated, so they count for achievements again.
+            // The game's own escape hatch (PlayerProfile.s_bypassCheatChecks, saved on the character). While it's on,
+            // Achievements.CanGetAchievements lets achievements through even for a cheated character or world.
             if (!Commands.Exists(Bypass)) return;
             Ui.Label(new Rect(r.x, y, r.width, 26f), $"<color={Ui.Gold}>Achievements</color>", Ui.Text);
             y += 30f;
             bool bypass = PlayerProfile.s_bypassCheatChecks;
-            Widgets.Switch(new Rect(r.x, y + 6f, 300f, 24f), "Cheated items count for achievements", bypass, Bypass + " 1", Bypass + " 0");
+            Widgets.Switch(new Rect(r.x, y + 6f, 300f, 24f), "Achievements even with cheats", bypass, Bypass + " 1", Bypass + " 0");
             y += RowH;
             GUI.Label(new Rect(r.x, y, r.width, 40f),
-                $"<color={Ui.Muted}>Items you spawn and pieces you build while this is on aren't marked as cheated, so they count for achievements. " +
-                "It doesn't clear what was marked before, or the cheat mark on your character.</color>", Widgets.Wrap);
+                $"<color={Ui.Muted}>The game's own option: while it's on you can earn achievements again, even on a character that used cheats. " +
+                "The cheat mark stays and still shows in the achievements list.</color>", Widgets.Wrap);
         }
     }
 }

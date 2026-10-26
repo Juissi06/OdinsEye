@@ -3,6 +3,9 @@
 ## Summary (short text under the title)
 Valheim's debug and admin commands in one window: spawn items and creatures, time and weather, teleport, server admin and more. Follows the game's own cheat rules.
 
+## Changelog / file description (0.1.1)
+- The achievements switch now says what it really does: while it's on you can earn achievements again, even on a character that used cheats
+
 ## Changelog / file description (0.1.0)
 - First release: Player, Spawn, World, Teleport, Admin and Inspect tabs in one window (Home)
 

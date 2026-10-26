@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.1
+- The achievements switch is now called "Achievements even with cheats" and says what it really does: while it's on you can earn achievements again, even on a character that used cheats.
+
 ## 0.1.0
 - Player tab: switch for the game's "yesiuseddevcommandsbutiwantmyachievementsanyway", so cheated items and pieces count for achievements again.
 - Hover a button to see the console command it runs.
