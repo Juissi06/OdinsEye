@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.1.0
+- Teleport tab: pick a spot on the map, saved spots per world, trader and boss shortcuts, location search, nearest biome, go to or bring players.
+- Admin tab: save, kick, ban, unban, banned list, difficulty scale, portal and map rules, reveal or forget the map, delete around you, fuel, fires and smoke, repair gear.
 - Spawn tab: items and creatures with icons, categories and search; amount, quality or stars; into your inventory or in front of you; premade item sets.
 - World tab: time presets and slider, real time, skip time, weather, wind, game speed, raids, clean-up, no monster spawns, boss progress.
 - Destructive actions ask first.

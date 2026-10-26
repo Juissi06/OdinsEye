@@ -13,7 +13,10 @@ Early. Working tabs:
 - **Spawn:** every item and creature with icons, categories and search. Pick an amount and quality (or stars for creatures) and spawn it in front of you or straight into your inventory. Premade item sets too.
 - **World:** time of day, skip time, weather, wind, game speed, raids, kill enemies and clean up drops (asks first), no monster spawns, boss progress.
 
-Teleport, Admin and Inspect are next. See docs/PLAN.md.
+- **Teleport:** pick a spot on the map, saved spots for each world, shortcuts to Haldor, Hildir, the Bog Witch and the boss altars, every location with search, the nearest biome of each kind, go to or bring other players.
+- **Admin:** save the world, kick and ban players, banned list and unban (server admins), difficulty scale, portals and map on or off, reveal or forget the map, delete everything around you (asks first, no undo), set fuel, put out fires, repair your gear.
+
+Inspect is next. See docs/PLAN.md.
 
 ## Keys
 | Key | Action |

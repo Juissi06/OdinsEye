@@ -36,6 +36,7 @@ namespace OdinsEye
             _menuObject = new GameObject("OdinsEye_Menu");
             DontDestroyOnLoad(_menuObject);
             _menuObject.AddComponent<Menu>();
+            _menuObject.AddComponent<MapPickHint>();
 
             _harmony = new Harmony(Guid);
             _harmony.PatchAll(typeof(Plugin).Assembly);

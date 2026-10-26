@@ -32,12 +32,14 @@ namespace OdinsEye
         }
 
         // Runs line when clicked; greyed out unless the game accepts the command. confirm != null asks first.
-        internal static bool Command(Rect r, string label, string line, string confirm = null)
+        // adminOnly: commands the client always accepts but the server refuses unless you're an admin
+        // (kick, ban, save), so grey them out for everyone else instead of sending a request that fails.
+        internal static bool Command(Rect r, string label, string line, string confirm = null, bool adminOnly = false)
         {
             string name = line.Split(' ')[0];
             if (!Commands.Exists(name)) return false;
             bool was = GUI.enabled;
-            GUI.enabled = was && Commands.CanRun(name);
+            GUI.enabled = was && Commands.CanRun(name) && (!adminOnly || Commands.IsAdmin);
             bool clicked = GUI.Button(r, label);
             GUI.enabled = was;
             if (!clicked) return false;

@@ -23,8 +23,8 @@ One Valheim-style window (Home) for the game's debug and admin commands, instead
 1. [x] **Skeleton:** repo, window with tabs, command runner, permission states, achievement warning, Player tab toggles as a first real use.
 2. [x] **World tab:** time (presets, slider, real time, skip), weather list, wind, game speed, raids, clean-up with confirmation, no monster spawns, boss progress. Player tab extras (skills, status effects) still to do.
 3. [x] **Spawn browser:** categories, search by name or prefab, icon grid (only visible rows drawn), amount, quality or stars, straight into inventory, creatures, premade item sets. Favourites still to do.
-4. **Teleport:** map click, saved spots, locations, players.
-5. **Admin tab:** area tools, player list with kick and ban, save.
+4. [x] **Teleport:** pick a spot on the large map, saved spots per world (BepInEx/config/OdinsEye.spots.txt), trader and boss shortcuts, all locations with search, nearest biome, go to or bring players.
+5. [x] **Admin tab:** save, banned list, unban, players with kick and ban (by platform ID, admins only), difficulty scale, portals and map rules, reveal or forget the map, clear table data, delete around you with radius and name filter (asks first), fuel, fires and smoke, repair gear. The game has no "repair buildings" command, so that one isn't here.
 6. **Inspect:** the small crosshair readout.
 7. **Polish:** favourites, last used actions, test in single player, a hosted world and on a dedicated server (as admin and not).
 

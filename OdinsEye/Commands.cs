@@ -44,6 +44,21 @@ namespace OdinsEye
             return command.RemoteCommand && ZNet.instance != null && !ZNet.instance.IsServer() && IsAdmin;
         }
 
+        // The options the console offers for a command's first argument (Tab completion): location names for
+        // findtp, biomes for findbiometp and so on. Empty when there are none.
+        internal static List<string> Options(string name)
+        {
+            if (!All().TryGetValue(name, out var command)) return new List<string>();
+            try
+            {
+                return command.GetTabOptions() ?? new List<string>();
+            }
+            catch (System.Exception)
+            {
+                return new List<string>(); // the game's list isn't ready yet
+            }
+        }
+
         // A command this game version doesn't have hides its button instead of failing.
         internal static bool Exists(string name) => All().ContainsKey(name);
 

@@ -166,8 +166,8 @@ namespace OdinsEye
                 case Tab.Player: PlayerTab.Draw(r); break;
                 case Tab.Spawn: SpawnTab.Draw(r); break;
                 case Tab.World: WorldTab.Draw(r); break;
-                case Tab.Teleport: Planned(r, "Click the map to go there, saved spots, find a location and jump to it, bring players to you."); break;
-                case Tab.Admin: Planned(r, "Repair everything nearby, delete what you look at, set fuel, stop fire and smoke, map and portal rules, player list with kick and ban, save the world."); break;
+                case Tab.Teleport: TeleportTab.Draw(r); break;
+                case Tab.Admin: AdminTab.Draw(r); break;
                 case Tab.Inspect: Planned(r, "What's under your crosshair: prefab name, owner, health, position and its saved data."); break;
             }
         }
