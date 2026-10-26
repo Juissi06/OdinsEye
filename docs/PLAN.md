@@ -25,8 +25,12 @@ One Valheim-style window (Home) for the game's debug and admin commands, instead
 3. [x] **Spawn browser:** categories, search by name or prefab, icon grid (only visible rows drawn), amount, quality or stars, straight into inventory, creatures, premade item sets. Favourites still to do.
 4. [x] **Teleport:** pick a spot on the large map, saved spots per world (BepInEx/config/OdinsEye.spots.txt), trader and boss shortcuts, all locations with search, nearest biome, go to or bring players.
 5. [x] **Admin tab:** save, banned list, unban, players with kick and ban (by platform ID, admins only), difficulty scale, portals and map rules, reveal or forget the map, clear table data, delete around you with radius and name filter (asks first), fuel, fires and smoke, repair gear. The game has no "repair buildings" command, so that one isn't here.
-6. **Inspect:** the small crosshair readout.
-7. **Polish:** favourites, last used actions, test in single player, a hosted world and on a dedicated server (as admin and not).
+6. [x] **Inspect:** what is in the middle of your view behind the window (the camera stands still while it is open): name, prefab, kind, position and distance, network id and owner, builder, health, creature level, faction, tamed, alerted and target. Copy the prefab name, spawn another.
+7. **Polish:**
+   - [x] Spawn favourites (kept in the config) and recently spawned (this session).
+   - [x] The game's refusals show in red in the footer; console colour tags stripped so they stay readable.
+   - [x] Log a note when a command mod (Server devcommands and the like) is installed.
+   - [ ] Test in single player, a hosted world, and on a dedicated server as admin and not.
 
 ## Open
 - Overlap with Server devcommands (JereKuusela) and other cheat menus: detect them and say so in the log; the window keeps working since it goes through the console.

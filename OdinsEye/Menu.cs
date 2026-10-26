@@ -168,7 +168,7 @@ namespace OdinsEye
                 case Tab.World: WorldTab.Draw(r); break;
                 case Tab.Teleport: TeleportTab.Draw(r); break;
                 case Tab.Admin: AdminTab.Draw(r); break;
-                case Tab.Inspect: Planned(r, "What's under your crosshair: prefab name, owner, health, position and its saved data."); break;
+                case Tab.Inspect: InspectTab.Draw(r); break;
             }
         }
 
@@ -185,7 +185,11 @@ namespace OdinsEye
                 Ui.Label(r, $"<color={Ui.Muted}>{Ui.KeyName(Plugin.MenuKey.Value)} or Esc to close</color>", Ui.Small);
                 return;
             }
-            Ui.Label(r, $"<color={Ui.Gold}>&gt; {Commands.LastCommand}</color>   <color={Ui.Muted}>{Commands.LastOutput}</color>", Ui.Small);
+            string output = Commands.LastOutput ?? "";
+            // The game's own refusals ("not valid in the current context", "Error executing command") in red.
+            bool failed = output.Contains("not valid") || output.Contains("Error") || output.Contains("not a recognized") ||
+                          output.Contains("Missing object");
+            Ui.Label(r, $"<color={Ui.Gold}>&gt; {Commands.LastCommand}</color>   <color={(failed ? Ui.Bad : Ui.Muted)}>{Ui.StripColor(output)}</color>", Ui.Small);
         }
     }
 

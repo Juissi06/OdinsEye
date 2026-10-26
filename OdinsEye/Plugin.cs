@@ -19,6 +19,7 @@ namespace OdinsEye
         internal static ConfigEntry<KeyboardShortcut> MenuKey;
         internal static ConfigEntry<float> UiScale;
         internal static ConfigEntry<Tab> LastTab;
+        internal static ConfigEntry<string> SpawnFavourites;
         internal static ManualLogSource Log;
 
         Harmony _harmony;
@@ -32,6 +33,7 @@ namespace OdinsEye
             UiScale = Config.Bind("General", "UI scale", 1f,
                 new ConfigDescription("Size of the window.", new AcceptableValueRange<float>(0.5f, 2f)));
             LastTab = Config.Bind("General", "Last tab", Tab.Player, "The tab the window opens on.");
+            SpawnFavourites = Config.Bind("Spawn", "Favourites", "", "Prefab names ticked as favourites in the Spawn tab, comma-separated.");
 
             _menuObject = new GameObject("OdinsEye_Menu");
             DontDestroyOnLoad(_menuObject);
@@ -57,7 +59,23 @@ namespace OdinsEye
                 return;
             }
             Ui.PrepareArt(); // once: the game's UI sprites are loaded by the time a player exists
+            if (!_compatChecked) CheckCompat();
             if (MenuKey.Value.IsDown() && !IsTyping()) Menu.Toggle();
+        }
+
+        bool _compatChecked;
+
+        // Other command mods change what the console allows. The window asks the game per command, so it keeps
+        // working; just say so in the log so a "why is this button enabled" question has an answer.
+        void CheckCompat()
+        {
+            _compatChecked = true;
+            foreach (var info in BepInEx.Bootstrap.Chainloader.PluginInfos.Values)
+            {
+                string id = (info.Metadata.GUID + " " + info.Metadata.Name).ToLowerInvariant();
+                if (id.Contains("devcommands") || id.Contains("cheat") || id.Contains("debugmenu"))
+                    Logger.LogInfo($"{info.Metadata.Name} changes console commands; Odin's Eye follows whatever it allows.");
+            }
         }
 
         // Chat and the console have focus; the window itself reports as a text box, so it doesn't count here.

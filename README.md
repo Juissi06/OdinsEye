@@ -16,7 +16,9 @@ Early. Working tabs:
 - **Teleport:** pick a spot on the map, saved spots for each world, shortcuts to Haldor, Hildir, the Bog Witch and the boss altars, every location with search, the nearest biome of each kind, go to or bring other players.
 - **Admin:** save the world, kick and ban players, banned list and unban (server admins), difficulty scale, portals and map on or off, reveal or forget the map, delete everything around you (asks first, no undo), set fuel, put out fires, repair your gear.
 
-Inspect is next. See docs/PLAN.md.
+- **Inspect:** what's in the middle of your view: name, prefab, position, owner, builder, health, creature level and what it's after. Copy the prefab name or spawn another.
+
+Favourites and recent spawns live at the top of the Spawn tab. See docs/PLAN.md for what's left.
 
 ## Keys
 | Key | Action |

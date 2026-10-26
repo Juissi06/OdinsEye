@@ -8,11 +8,11 @@ namespace OdinsEye
     // with "itemset".
     internal static class SpawnTab
     {
-        internal enum Category { All, Weapons, Armor, Ammo, Food, Materials, Tools, Trophies, Other, Creatures, ItemSets }
+        internal enum Category { Favourites, Recent, All, Weapons, Armor, Ammo, Food, Materials, Tools, Trophies, Other, Creatures, ItemSets }
 
         static readonly Category[] Categories =
         {
-            Category.All, Category.Weapons, Category.Armor, Category.Ammo, Category.Food, Category.Materials, Category.Tools,
+            Category.Favourites, Category.Recent, Category.All, Category.Weapons, Category.Armor, Category.Ammo, Category.Food, Category.Materials, Category.Tools,
             Category.Trophies, Category.Other, Category.Creatures, Category.ItemSets
         };
 
@@ -40,6 +40,37 @@ namespace OdinsEye
         static Vector2 _scroll;
         static int _amount = 1, _level = 1;
         static bool _toInventory = true;
+
+        // Favourites are kept in the config (prefab names); recent spawns only for this session, newest first.
+        static readonly List<string> Recent = new List<string>();
+        static HashSet<string> _favourites;
+        const int MaxRecent = 24;
+
+        static HashSet<string> Favourites
+        {
+            get
+            {
+                if (_favourites == null)
+                    _favourites = new HashSet<string>(Plugin.SpawnFavourites.Value.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries));
+                return _favourites;
+            }
+        }
+
+        static void SetFavourite(string prefab, bool on)
+        {
+            if (on) Favourites.Add(prefab);
+            else Favourites.Remove(prefab);
+            Plugin.SpawnFavourites.Value = string.Join(",", Favourites);
+            _shownSearch = null; // refresh the list if it's showing favourites
+        }
+
+        static void Remember(string prefab)
+        {
+            Recent.Remove(prefab);
+            Recent.Insert(0, prefab);
+            if (Recent.Count > MaxRecent) Recent.RemoveAt(Recent.Count - 1);
+            if (_category == Category.Recent) _shownSearch = null;
+        }
 
         internal static void Draw(Rect r)
         {
@@ -146,10 +177,25 @@ namespace OdinsEye
             _shownCategory = _category;
             Shown.Clear();
             string q = _search.Trim().ToLowerInvariant();
+            if (_category == Category.Recent)
+            {
+                foreach (var prefab in Recent)
+                {
+                    var e = Entries.Find(x => x.Prefab == prefab);
+                    if (e != null && (q.Length == 0 || e.Search.Contains(q))) Shown.Add(e);
+                }
+                _scroll = Vector2.zero;
+                return;
+            }
             foreach (var e in Entries)
             {
-                if (_category != Category.All && e.Category != _category) continue;
+                if (_category == Category.Favourites)
+                {
+                    if (!Favourites.Contains(e.Prefab)) continue;
+                }
+                else if (_category != Category.All && e.Category != _category) continue;
                 if (_category == Category.All && e.Creature) continue; // creatures have their own list
+                // Favourites keep creatures too.
                 if (q.Length > 0 && !e.Search.Contains(q)) continue;
                 Shown.Add(e);
             }
@@ -197,7 +243,11 @@ namespace OdinsEye
             }
             GUI.EndScrollView();
             if (Shown.Count == 0)
-                Ui.Label(new Rect(inner.x + 8f, inner.y + 4f, inner.width, 24f), $"<color={Ui.Muted}>Nothing matches.</color>", Ui.Small);
+            {
+                string empty = _category == Category.Favourites ? "No favourites yet: pick something and tick Favourite."
+                    : _category == Category.Recent ? "Nothing spawned yet this session." : "Nothing matches.";
+                Ui.Label(new Rect(inner.x + 8f, inner.y + 4f, inner.width, 24f), $"<color={Ui.Muted}>{empty}</color>", Ui.Small);
+            }
         }
 
         static GUIStyle _cellText, _titleText;
@@ -239,7 +289,10 @@ namespace OdinsEye
             float tx = e.Icon != null ? x + 56f : x;
             GUI.Label(new Rect(tx, y, w - (tx - x), 30f), $"<b>{e.Name}</b>", TitleText);
             Ui.Label(new Rect(tx, y + 28f, w - (tx - x), 20f), $"<color={Ui.Muted}>{e.Prefab}</color>", Ui.Small);
-            y += 58f;
+            y += 54f;
+            bool fav = Favourites.Contains(e.Prefab);
+            if (GUI.Toggle(new Rect(x, y, w, 22f), fav, "Favourite") != fav) SetFavourite(e.Prefab, !fav);
+            y += 26f;
 
             // Amount: the command spawns one object per count, so keep it sane.
             int max = e.Creature ? 20 : Mathf.Clamp(e.MaxStack, 1, 100);
@@ -275,7 +328,8 @@ namespace OdinsEye
 
             string line = $"spawn {e.Prefab} {_amount} {_level}" + (!e.Creature && _toInventory ? " 0.5 p" : "");
             float by = r.yMax - 10f - 34f;
-            Widgets.Command(new Rect(x, by, w, 34f), e.Creature ? $"Spawn {_amount} in front of you" : $"Spawn {_amount}", line);
+            if (Widgets.Command(new Rect(x, by, w, 34f), e.Creature ? $"Spawn {_amount} in front of you" : $"Spawn {_amount}", line))
+                Remember(e.Prefab);
             GUI.Label(new Rect(x, y, w, by - y - 4f),
                 $"<color={Ui.Muted}>Spawns in front of you{(e.Creature ? ". Creatures spawn hostile unless tamed." : ".")}</color>", Widgets.Wrap);
         }

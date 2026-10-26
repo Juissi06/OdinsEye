@@ -263,6 +263,9 @@ namespace OdinsEye
         static readonly Regex ColorTags = new Regex("</?color[^>]*>", RegexOptions.Compiled);
         static readonly Dictionary<string, string> PlainCache = new Dictionary<string, string>();
 
+        // Text without <color> tags, e.g. the console's dark red, which can't be read on the wood panel.
+        internal static string StripColor(string text) => Plain(text);
+
         static string Plain(string text)
         {
             if (string.IsNullOrEmpty(text) || text.IndexOf("<color", System.StringComparison.Ordinal) < 0) return text;
