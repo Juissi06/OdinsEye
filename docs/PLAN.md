@@ -12,7 +12,9 @@ One Valheim-style window (Home) for the game's debug and admin commands, instead
 ## Tabs
 | Tab | Contents |
 |---|---|
-| **Player** | god, ghost, fly, no build cost, heal, set skill levels, add or clear status effects, clear inventory, game speed |
+| **Player** | god, ghost, fly, no build cost, heal, achievements switch |
+| **Skills** | every skill: set its level, reset; learn faster, keep skills on death |
+| **Buffs** | status effects with icons, guardian powers, food |
 | **Spawn** | searchable item and creature browser with icons: amount, quality, star level, spawn where you look or into your inventory, starter item sets |
 | **World** | time of day slider, skip time, weather list, wind, start and stop raids, kill enemies, remove drops, fish and birds, boss progress (world keys) |
 | **Teleport** | click the map to go there, saved spots, find a location and jump to it, bring players to you |
@@ -40,15 +42,15 @@ follows the game's rules for free. **New cheats:** Odin's Eye's own code. Same r
 where the game allows cheats (single player, or a world you host, with dev commands on and confirmed), and they switch
 off with dev commands.
 
-### Skills and XP
-- **Skill levels** (console): every skill with its level, set it with a slider or reset it (`raiseskill`, `resetskill`).
-- **XP multiplier** (new): learn skills x2, x5, x10 faster, per skill or for all. Applies where the game raises a skill.
-- **Keep skills on death** (new): no skill loss when you die, instead of a separate "no skill drain" buff.
+### Skills and XP (done, 0.2: Skills tab)
+- [x] **Skill levels** (console): every skill with its level, set it with a slider or reset it (`raiseskill` by the difference, `resetskill`). Only the game's own skills: the console can't find skills added by other mods.
+- [x] **XP multiplier** (new): learn x2 to x25 faster, for all skills (patch on `Skills.RaiseSkill`). Per skill: later, if asked.
+- [x] **Keep skills on death** (new): skips `Skills.OnDeath`, and the wipe from the "skills reset on death" world modifier.
 
-### Buffs and status effects
-- **Buffs** (console): every status effect in the game with its icon (Rested, mead buffs, Wet, Burning…), add or clear them (`addstatus`, `clearstatus`).
-- **Guardian power** (console): pick any boss power and reset its cooldown (`setpower`).
-- **Food** (console): empty your stomach to try other food (`puke`).
+### Buffs and status effects (done, 0.2: Buffs tab)
+- [x] **Buffs** (console): every status effect with an icon, with search; add one or clear all (`addstatus`, `clearstatus`). The game has no command to remove just one.
+- [x] **Guardian power** (console): pick any boss power and reset its cooldown (`setpower`).
+- [x] **Food** (console): what you've eaten and how long it lasts, empty your stomach (`puke`).
 
 ### Fun cheats (new)
 - **Giant and Tiny:** scale your character from 0.25x to 4x. Other players see your real size unless they have Odin's Eye too, since size isn't saved in the world.

@@ -81,7 +81,11 @@ namespace OdinsEye
             Plugin.Log.LogInfo($"{line} -> {LastOutput}");
         }
 
-        internal static void Capture(string text) => _captured?.Add(text);
+        internal static void Capture(string text)
+        {
+            // "raiseskill all" also tries the placeholder skill None and complains about it.
+            if (text != "Skill not found None") _captured?.Add(text);
+        }
     }
 
     // The console prints each command's result; while the window runs one, keep a copy.

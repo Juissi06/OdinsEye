@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace OdinsEye
 {
-    internal enum Tab { Player, Spawn, World, Teleport, Admin, Inspect }
+    internal enum Tab { Player, Skills, Buffs, Spawn, World, Teleport, Admin, Inspect }
 
     // The Odin's Eye window: a wood panel with tabs, a line saying what the game currently allows, the tab's
     // content, and the last command with what the game answered.
@@ -11,7 +11,7 @@ namespace OdinsEye
     {
         const float W = 840f, H = 560f, Pad = 18f, TitleH = 34f, TabsH = 32f, BannerH = 34f, FooterH = 26f;
 
-        static readonly Tab[] Tabs = { Tab.Player, Tab.Spawn, Tab.World, Tab.Teleport, Tab.Admin, Tab.Inspect };
+        static readonly Tab[] Tabs = { Tab.Player, Tab.Skills, Tab.Buffs, Tab.Spawn, Tab.World, Tab.Teleport, Tab.Admin, Tab.Inspect };
 
         internal static bool IsOpen { get; private set; }
         internal static bool SearchFocused; // set by tabs with a search box, so the menu key can be typed there
@@ -197,6 +197,8 @@ namespace OdinsEye
             switch (_tab)
             {
                 case Tab.Player: PlayerTab.Draw(r); break;
+                case Tab.Skills: SkillsTab.Draw(r); break;
+                case Tab.Buffs: BuffsTab.Draw(r); break;
                 case Tab.Spawn: SpawnTab.Draw(r); break;
                 case Tab.World: WorldTab.Draw(r); break;
                 case Tab.Teleport: TeleportTab.Draw(r); break;
@@ -214,6 +216,11 @@ namespace OdinsEye
         static void DrawFooter(Rect r)
         {
             // Hovering a command button shows what it will run, so the console is learnt along the way.
+            if (!string.IsNullOrEmpty(GUI.tooltip) && GUI.tooltip[0] == '~')
+            {
+                Ui.Label(r, $"<color={Ui.Muted}>{GUI.tooltip.Substring(1)}</color>", Ui.Small);
+                return;
+            }
             if (!string.IsNullOrEmpty(GUI.tooltip))
             {
                 Ui.Label(r, $"<color={Ui.Muted}>Runs:</color> <color={Ui.Gold}>{GUI.tooltip}</color>", Ui.Small);

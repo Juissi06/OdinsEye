@@ -21,6 +21,8 @@ namespace OdinsEye
         internal static ConfigEntry<Tab> LastTab;
         internal static ConfigEntry<string> SpawnFavourites;
         internal static ConfigEntry<Vector2> WindowOffset;
+        internal static ConfigEntry<float> XpMultiplier;
+        internal static ConfigEntry<bool> KeepSkills;
         internal static ManualLogSource Log;
 
         Harmony _harmony;
@@ -35,6 +37,9 @@ namespace OdinsEye
                 new ConfigDescription("Size of the window.", new AcceptableValueRange<float>(0.5f, 2f)));
             LastTab = Config.Bind("General", "Last tab", Tab.Player, "The tab the window opens on.");
             WindowOffset = Config.Bind("General", "Window offset", Vector2.zero, "Where you dragged the window, from the centre of the screen.");
+            XpMultiplier = Config.Bind("Cheats", "Skill speed", 1f,
+                new ConfigDescription("Skills level this many times faster. Only while cheats are on.", new AcceptableValueRange<float>(0f, 100f)));
+            KeepSkills = Config.Bind("Cheats", "Keep skills on death", false, "Dying doesn't lower your skills. Only while cheats are on.");
             SpawnFavourites = Config.Bind("Spawn", "Favourites", "", "Prefab names ticked as favourites in the Spawn tab, comma-separated.");
 
             _menuObject = new GameObject("OdinsEye_Menu");

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+- Skills tab: every skill with its level; set a skill to any level, step it up or down, max or reset it, or all skills at once.
+- Learn faster (x2 to x25) and keep skills when you die: Odin's Eye's own cheats, only while the game allows cheats.
+- Buffs tab: every status effect with its icon and search, add one or clear them all; guardian powers with the cooldown reset; your food and "empty stomach".
+
 ## 0.1.1
 - The achievements switch is now called "Achievements even with cheats" and says what it really does: while it's on you can earn achievements again, even on a character that used cheats.
 

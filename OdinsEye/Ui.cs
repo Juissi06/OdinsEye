@@ -17,6 +17,7 @@ namespace OdinsEye
         internal const string Gold = "#e8c77e";
 
         internal static readonly Color GoldColor = new Color(0.91f, 0.78f, 0.49f);
+        internal static readonly Color GoodColor = new Color(0.61f, 0.88f, 0.48f);
         static readonly Color ShadowColor = new Color(0f, 0f, 0f, 0.85f);
 
         static bool _ready;

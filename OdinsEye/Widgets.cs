@@ -75,9 +75,23 @@ namespace OdinsEye
         }
 
         // Plain button (no command), for choices inside the window.
-        internal static bool Choice(Rect r, string label, bool selected)
+        internal static bool Choice(Rect r, string label, bool selected, string tooltip = null)
         {
-            return GUI.Button(r, selected ? $"<color={Ui.Gold}><b>{label}</b></color>" : label);
+            return GUI.Button(r, new GUIContent(selected ? $"<color={Ui.Gold}><b>{label}</b></color>" : label, tooltip));
+        }
+
+        // Tooltips starting with "~" are shown as they are in the footer, without "Runs:".
+        internal const string OwnCheat = "~Odin's Eye's own cheat: there's no console command for this.";
+
+        // Switch for one of Odin's Eye's own cheats (Cheats): greyed out where the game wouldn't allow a cheat.
+        internal static bool CheatSwitch(Rect r, string label, bool on)
+        {
+            bool was = GUI.enabled;
+            GUI.enabled = was && Cheats.Allowed;
+            bool now = GUI.Toggle(r, on, new GUIContent(label, OwnCheat));
+            GUI.enabled = was;
+            if (now != on) GUIUtility.keyboardControl = 0;
+            return now;
         }
     }
 }
