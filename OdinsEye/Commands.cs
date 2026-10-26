@@ -48,7 +48,7 @@ namespace OdinsEye
         // findtp, biomes for findbiometp and so on. Empty when there are none.
         internal static List<string> Options(string name)
         {
-            if (!All().TryGetValue(name, out var command)) return new List<string>();
+            if (name == null || !All().TryGetValue(name.ToLowerInvariant(), out var command)) return new List<string>();
             try
             {
                 return command.GetTabOptions() ?? new List<string>();
@@ -66,10 +66,12 @@ namespace OdinsEye
                 if (!command.IsSecret) yield return command;
         }
 
-        internal static Terminal.ConsoleCommand Find(string name) => All().TryGetValue(name, out var command) ? command : null;
+        // The console lowercases what you type before looking it up, so these do too.
+        internal static Terminal.ConsoleCommand Find(string name) =>
+            name != null && All().TryGetValue(name.ToLowerInvariant(), out var command) ? command : null;
 
         // A command this game version doesn't have hides its button instead of failing.
-        internal static bool Exists(string name) => All().ContainsKey(name);
+        internal static bool Exists(string name) => name != null && All().ContainsKey(name.ToLowerInvariant());
 
         // Runs a console line exactly as if typed, and keeps what the game printed for the window's status line.
         internal static void Run(string line)

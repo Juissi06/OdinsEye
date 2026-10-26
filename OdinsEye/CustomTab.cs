@@ -84,6 +84,9 @@ namespace OdinsEye
         const float SuggestH = 124f, SuggestRowH = 20f;
         const int MaxSuggestions = 5;
         static bool _moveToEnd;
+        static int _moveToEndFrame;
+        static string _suggestedFor;
+        static List<Suggestion> _suggested = new List<Suggestion>();
 
         class Suggestion
         {
@@ -92,35 +95,56 @@ namespace OdinsEye
 
         // What fits the word being typed: command names first, then that command's options (item and creature
         // names for spawn, skills for raiseskill...), the same list the game's console offers on Tab.
+        // Worked out once per change of the line, not on every GUI event: "spawn " alone matches thousands of names.
         static List<Suggestion> Suggestions(string line)
+        {
+            if (line == _suggestedFor) return _suggested;
+            _suggestedFor = line;
+            _suggested = FindSuggestions(line);
+            return _suggested;
+        }
+
+        static List<Suggestion> FindSuggestions(string line)
         {
             var list = new List<Suggestion>();
             string part = line.Substring(line.LastIndexOf(';') + 1).TrimStart();
             int space = part.IndexOf(' ');
             if (space < 0)
             {
-                if (part.Length == 0) return list;
-                string q = part.ToLowerInvariant();
-                foreach (var c in Commands.Visible().Where(c => c.Command.StartsWith(q)).OrderBy(c => c.Command))
+                // A command typed in full stays first, so Tab adds the space instead of swapping it for a longer
+                // one ("setkey" isn't "setkeyplayer"). Ones that can't run right now say so.
+                var commands = new Dictionary<string, Terminal.ConsoleCommand>();
+                foreach (var c in Commands.Visible()) commands[c.Command] = c;
+                foreach (var name in Widgets.Matches(commands.Keys, part, MaxSuggestions, true))
                 {
-                    if (c.Command == q) continue;
-                    list.Add(new Suggestion { Text = c.Command, Note = c.Description });
-                    if (list.Count >= MaxSuggestions) break;
+                    var c = commands[name];
+                    string note = c.Description;
+                    if (!Commands.CanRun(c.Command)) note = (c.IsCheat ? "(needs dev commands) " : "(can't run here) ") + note;
+                    list.Add(new Suggestion { Text = c.Command, Note = note });
                 }
                 return list;
             }
             // Only the first word after the command has options in the game's list.
-            string name = part.Substring(0, space);
+            string command = part.Substring(0, space);
             string rest = part.Substring(space + 1);
-            if (rest.Contains(" ") || Commands.Find(name) == null) return list;
-            string a = rest.ToLowerInvariant();
-            foreach (var option in Commands.Options(name).Where(o => o.ToLowerInvariant().StartsWith(a)).OrderBy(o => o.Length).ThenBy(o => o))
-            {
-                if (option.ToLowerInvariant() == a) continue;
+            if (rest.Contains(" ") || Commands.Find(command) == null) return list;
+            foreach (var option in Widgets.Matches(Commands.Options(command), rest, MaxSuggestions, false))
                 list.Add(new Suggestion { Text = option });
-                if (list.Count >= MaxSuggestions) break;
-            }
             return list;
+        }
+
+        // A command earlier on the line (before the last ;) that the console doesn't know. The part still being
+        // typed doesn't count: that's what the suggestions are for.
+        static string UnknownEarlier(string line)
+        {
+            var parts = Split(line);
+            bool typing = !line.TrimEnd().EndsWith(";");
+            for (int i = 0; i < parts.Count - (typing ? 1 : 0); i++)
+            {
+                string c = parts[i].Split(' ')[0];
+                if (!Commands.Exists(c)) return c;
+            }
+            return null;
         }
 
         // Replaces the word being typed with the suggestion and a space.
@@ -131,12 +155,20 @@ namespace OdinsEye
             _line = line.Substring(0, cut) + text + " ";
             GUI.FocusControl(LineControl);
             _moveToEnd = true;
+            _moveToEndFrame = Time.frameCount;
         }
 
         static void DrawSuggestions(Rect r)
         {
             string line = _line ?? "";
             var found = Suggestions(line);
+            string misspelt = UnknownEarlier(line);
+            if (found.Count > 0 && misspelt != null)
+            {
+                // Still said while suggesting for the next command on the line.
+                GUI.Label(new Rect(r.x, r.y, r.width, 18f), $"<color={Ui.Bad}>\"{misspelt}\" isn't a console command.</color>", Widgets.Wrap);
+                r = new Rect(r.x, r.y + 20f, r.width, r.height - 20f);
+            }
             if (found.Count == 0)
             {
                 // No word to complete: the command's own syntax as a reminder, or a problem, or the basics.
@@ -188,6 +220,8 @@ namespace OdinsEye
             }
             GUI.SetNextControlName(LineControl);
             _line = GUI.TextField(new Rect(x, y, w, 26f), _line ?? "", 200);
+            // A suggestion clicked just before the tab changed or the window closed mustn't move the cursor later.
+            if (_moveToEnd && Time.frameCount > _moveToEndFrame + 5) _moveToEnd = false;
             if (_moveToEnd && GUI.GetNameOfFocusedControl() == LineControl)
             {
                 // After a suggestion the cursor goes to the end, ready for the next word.
@@ -207,7 +241,9 @@ namespace OdinsEye
                 _line = Commands.LastCommand;
                 GUIUtility.keyboardControl = 0;
             }
-            GUI.enabled = was && _name.Trim().Length > 0 && Split(_line).Count > 0;
+            // Not with a command the console doesn't know anywhere on the line.
+            var parts = Split(_line);
+            GUI.enabled = was && _name.Trim().Length > 0 && parts.Count > 0 && parts.All(p => Commands.Exists(p.Split(' ')[0]));
             if (GUI.Button(new Rect(x, y + 32f, w, 30f), "Add button"))
             {
                 CustomButtons.Add(_name.Trim(), string.Join("; ", Split(_line).ToArray()));

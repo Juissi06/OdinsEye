@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1
+- All building pieces: the build menu updates right away when it's switched on or off, instead of after you re-equip the hammer.
+- Custom tab: a command typed in full stays the first suggestion, so Tab adds the space instead of turning "setkey" into "setkeyplayer" or "time" into "timescale".
+- Custom tab: commands work in any case ("Spawn Wood"), as in the game's console.
+- Custom tab: a misspelled command earlier on the line is still pointed out while you type the next one, and "Add button" stays off until every command on the line exists.
+- Custom tab: suggestions say when a command needs dev commands or can't run here; names containing what you typed show after the ones starting with it.
+- Custom tab: no slowdown after "spawn " while thousands of names match, no errors from a command with an empty option, and the cursor no longer jumps to the end later on.
+- World keys: suggestions sorted the same way as the console line's.
+
 ## 0.2.0
 New tabs
 - Skills: every skill with its level, modded skills too. Set any level, step it up or down, max or reset it, or all skills at once.

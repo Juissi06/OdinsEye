@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace OdinsEye
@@ -6,6 +7,33 @@ namespace OdinsEye
     // command right now (Commands.CanRun), so the window never offers something that silently fails.
     internal static class Widgets
     {
+        // Names matching what's typed, for suggestions: those starting with it first, then those containing it,
+        // each shortest first. The exact name itself is only kept when asked (so Tab can just add the space).
+        internal static List<string> Matches(IEnumerable<string> names, string typed, int max, bool keepExact)
+        {
+            string q = (typed ?? "").ToLowerInvariant();
+            var starts = new List<string>();
+            var contains = new List<string>();
+            string exact = null;
+            if (q.Length == 0) return starts;
+            foreach (var n in names)
+            {
+                if (n == null) continue; // the game's own option lists skip empty entries too
+                string l = n.ToLowerInvariant();
+                if (l == q) exact = n;
+                else if (l.StartsWith(q)) starts.Add(n);
+                else if (l.Contains(q)) contains.Add(n);
+            }
+            System.Comparison<string> order = (a, b) => a.Length != b.Length ? a.Length.CompareTo(b.Length) : string.CompareOrdinal(a, b);
+            starts.Sort(order);
+            contains.Sort(order);
+            var result = new List<string>();
+            if (keepExact && exact != null) result.Add(exact);
+            foreach (var n in starts) if (result.Count < max) result.Add(n);
+            foreach (var n in contains) if (result.Count < max) result.Add(n);
+            return result;
+        }
+
         internal const float RowH = 30f, HeaderH = 26f;
 
         static GUIStyle _wrap;

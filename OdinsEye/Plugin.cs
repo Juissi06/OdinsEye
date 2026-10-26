@@ -99,6 +99,27 @@ namespace OdinsEye
             Ui.PrepareArt(); // once: the game's UI sprites are loaded by the time a player exists
             if (!_compatChecked) CheckCompat();
             if (MenuKey.Value.IsDown() && !IsTyping()) Menu.Toggle();
+            RefreshPiecesOnUnlock();
+        }
+
+        static readonly System.Reflection.MethodInfo UpdatePieces = HarmonyLib.AccessTools.Method(typeof(Player), "UpdateAvailablePiecesList");
+        bool _piecesUnlocked;
+
+        // The game only rechecks "all pieces unlocked" when the hammer comes out, so the build menu would lag
+        // behind the World tab's switch (or a server admin's setkey) until then.
+        void RefreshPiecesOnUnlock()
+        {
+            bool unlocked = ZoneSystem.instance != null && ZoneSystem.instance.GetGlobalKey(GlobalKeys.AllPiecesUnlocked);
+            if (unlocked == _piecesUnlocked) return;
+            _piecesUnlocked = unlocked;
+            try
+            {
+                UpdatePieces?.Invoke(Player.m_localPlayer, null);
+            }
+            catch (System.Exception e)
+            {
+                Log.LogDebug("Couldn't refresh the build menu: " + e.Message);
+            }
         }
 
         bool _compatChecked;

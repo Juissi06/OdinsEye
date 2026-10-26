@@ -243,9 +243,8 @@ namespace OdinsEye
                     foreach (var k in System.Enum.GetNames(typeof(GlobalKeys)))
                         if (k != "NonServerOption" && k != "Count") AllKeys.Add(k);
                 float bx = x;
-                foreach (var k in AllKeys)
+                foreach (var k in Widgets.Matches(AllKeys, q, 20, false))
                 {
-                    if (!k.ToLowerInvariant().Contains(q) || k.ToLowerInvariant() == q) continue;
                     float kw = GUI.skin.button.CalcSize(new GUIContent(k)).x + 8f;
                     if (bx + kw > x + w) break;
                     if (GUI.Button(new Rect(bx, y, kw, 22f), new GUIContent(k, "~Fill in " + k))) _keyText = k + " ";
