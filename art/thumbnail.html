@@ -1,0 +1,70 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Odin's Eye thumbnail</title>
+<link href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:wght@700&family=Cinzel+Decorative:wght@900&display=block" rel="stylesheet">
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #120c07; }
+  .stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  /* The in-game screenshot, scaled so the Odin's Eye window sits on the right half. */
+  .shot {
+    position: absolute; width: 2554px; height: 1350px; left: 27px; top: -78px;
+    background: url("screenshot-spawn.png") center / cover no-repeat;
+    filter: saturate(1.05) contrast(1.05);
+  }
+  /* Dark wood-brown fade on the left for the title, and a vignette all round. */
+  .fade {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgba(14,9,5,1) 0%, rgba(14,9,5,1) 30%, rgba(14,9,5,0.6) 40%, rgba(14,9,5,0) 52%),
+      radial-gradient(ellipse at 62% 50%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%);
+  }
+  /* Thin gold frame like the game's panel edges. */
+  .frame { position: absolute; inset: 18px; border: 2px solid rgba(214,170,92,0.55); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.6); }
+  .title-block { position: absolute; left: 90px; top: 250px; width: 720px; }
+  .eye { width: 120px; height: 120px; display: block; margin-bottom: 18px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8)); }
+  h1 {
+    margin: 0; font-family: "Cinzel Decorative", serif; font-weight: 900; font-size: 128px; line-height: 1.0;
+    letter-spacing: 4px;
+    background: linear-gradient(180deg, #fff3cf 0%, #f0cf86 38%, #c9973f 62%, #8a5a1c 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    -webkit-text-stroke: 2px rgba(40,22,6,0.9);
+    filter: drop-shadow(0 6px 0 rgba(0,0,0,0.65)) drop-shadow(0 0 22px rgba(240,190,90,0.25));
+  }
+  .rule { width: 560px; height: 3px; margin: 30px 0 26px;
+    background: linear-gradient(90deg, rgba(232,199,126,0), #e8c77e 18%, #e8c77e 82%, rgba(232,199,126,0)); }
+  .tagline { font-family: "Averia Serif Libre", serif; font-weight: 700; font-size: 44px; line-height: 1.25; color: #f3e9d4;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.9); }
+  .tabs { margin-top: 26px; font-family: "Averia Serif Libre", serif; font-weight: 700; font-size: 30px; color: #e8c77e;
+    letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.9); }
+  .tabs span { color: #b9ad98; margin: 0 10px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="shot"></div>
+  <div class="fade"></div>
+  <div class="frame"></div>
+  <div class="title-block">
+    <svg class="eye" viewBox="0 0 120 120" aria-hidden="true">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff0c4"/><stop offset="0.5" stop-color="#e2b965"/><stop offset="1" stop-color="#8a5a1c"/>
+        </linearGradient>
+      </defs>
+      <circle cx="60" cy="60" r="55" fill="#1a110a" stroke="url(#g)" stroke-width="5"/>
+      <circle cx="60" cy="60" r="47" fill="none" stroke="#e8c77e" stroke-opacity="0.35" stroke-width="1.5"/>
+      <path d="M18 60 Q60 22 102 60 Q60 98 18 60 Z" fill="#0e0905" stroke="url(#g)" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="60" cy="60" r="17" fill="url(#g)"/>
+      <circle cx="60" cy="60" r="7" fill="#0e0905"/>
+      <path d="M60 4 V16 M60 104 V116 M4 60 H14 M106 60 H116" stroke="url(#g)" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+    <h1>Odin's<br>Eye</h1>
+    <div class="rule"></div>
+    <div class="tagline">Valheim's debug and admin<br>commands in one window</div>
+    <div class="tabs">Spawn<span>·</span>World<span>·</span>Teleport<span>·</span>Admin</div>
+  </div>
+</div>
+</body>
+</html>

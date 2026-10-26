@@ -29,6 +29,7 @@ namespace OdinsEye
         {
             IsOpen = true;
             _tab = Plugin.LastTab.Value;
+            _offset = Plugin.WindowOffset.Value;
         }
 
         internal static void Close()
@@ -60,8 +61,9 @@ namespace OdinsEye
                     else Close();
                     return;
                 }
-                var window = new Rect((sw - W) * 0.5f, (sh - H) * 0.5f, W, H);
+                var window = new Rect((sw - W) * 0.5f + _offset.x, (sh - H) * 0.5f + _offset.y, W, H);
                 bool asking = _askText != null;
+                if (!asking) Drag(new Rect(window.x, window.y, window.width - Pad - 40f, Pad + TitleH), sw, sh);
                 GUI.enabled = !asking;
                 DrawWindow(window);
                 GUI.enabled = true;
@@ -96,13 +98,43 @@ namespace OdinsEye
             DrawFooter(new Rect(x, r.yMax - Pad - FooterH, inner, FooterH));
         }
 
+        static bool _dragging;
+        static Vector2 _dragFrom, _offset; // offset lives here while dragging; the config is written on release
+
+        // Drag the window by its title bar; the spot is saved, and the window can't leave the screen.
+        static void Drag(Rect handle, float sw, float sh)
+        {
+            var e = Event.current;
+            if (e.type == EventType.MouseDown && e.button == 0 && handle.Contains(e.mousePosition))
+            {
+                _dragging = true;
+                _dragFrom = e.mousePosition - _offset;
+                e.Use();
+            }
+            else if (_dragging && e.type == EventType.MouseDrag)
+            {
+                Vector2 offset = e.mousePosition - _dragFrom;
+                float maxX = (sw - W) * 0.5f, maxY = (sh - H) * 0.5f;
+                offset.x = Mathf.Clamp(offset.x, -maxX, maxX);
+                offset.y = Mathf.Clamp(offset.y, -maxY, maxY);
+                _offset = offset;
+                e.Use();
+            }
+            else if (_dragging && (e.type == EventType.MouseUp || e.rawType == EventType.MouseUp))
+            {
+                _dragging = false;
+                Plugin.WindowOffset.Value = _offset;
+                e.Use();
+            }
+        }
+
         static void DrawAsk(Rect window)
         {
             const float w = 420f, h = 130f;
             var r = new Rect(window.center.x - w * 0.5f, window.center.y - h * 0.5f, w, h);
             Ui.Panel(r);
             GUI.Label(new Rect(r.x + 16f, r.y + 14f, w - 32f, 54f), _askText, Widgets.Wrap);
-            Ui.Label(new Rect(r.x + 16f, r.y + 62f, w - 32f, 20f), $"<color={Ui.Muted}>&gt; {_askLine}</color>", Ui.Small);
+            Ui.Label(new Rect(r.x + 16f, r.y + 62f, w - 32f, 20f), $"<color={Ui.Muted}>> {_askLine}</color>", Ui.Small);
             if (GUI.Button(new Rect(r.x + 16f, r.yMax - 40f, 180f, 28f), "Yes, do it"))
             {
                 string line = _askLine;
@@ -180,6 +212,12 @@ namespace OdinsEye
 
         static void DrawFooter(Rect r)
         {
+            // Hovering a command button shows what it will run, so the console is learnt along the way.
+            if (!string.IsNullOrEmpty(GUI.tooltip))
+            {
+                Ui.Label(r, $"<color={Ui.Muted}>Runs:</color> <color={Ui.Gold}>{GUI.tooltip}</color>", Ui.Small);
+                return;
+            }
             if (Commands.LastCommand == null)
             {
                 Ui.Label(r, $"<color={Ui.Muted}>{Ui.KeyName(Plugin.MenuKey.Value)} or Esc to close</color>", Ui.Small);
@@ -189,7 +227,7 @@ namespace OdinsEye
             // The game's own refusals ("not valid in the current context", "Error executing command") in red.
             bool failed = output.Contains("not valid") || output.Contains("Error") || output.Contains("not a recognized") ||
                           output.Contains("Missing object");
-            Ui.Label(r, $"<color={Ui.Gold}>&gt; {Commands.LastCommand}</color>   <color={(failed ? Ui.Bad : Ui.Muted)}>{Ui.StripColor(output)}</color>", Ui.Small);
+            Ui.Label(r, $"<color={Ui.Gold}>> {Commands.LastCommand}</color>   <color={(failed ? Ui.Bad : Ui.Muted)}>{Ui.StripColor(output)}</color>", Ui.Small);
         }
     }
 

@@ -20,6 +20,7 @@ namespace OdinsEye
         internal static ConfigEntry<float> UiScale;
         internal static ConfigEntry<Tab> LastTab;
         internal static ConfigEntry<string> SpawnFavourites;
+        internal static ConfigEntry<Vector2> WindowOffset;
         internal static ManualLogSource Log;
 
         Harmony _harmony;
@@ -33,6 +34,7 @@ namespace OdinsEye
             UiScale = Config.Bind("General", "UI scale", 1f,
                 new ConfigDescription("Size of the window.", new AcceptableValueRange<float>(0.5f, 2f)));
             LastTab = Config.Bind("General", "Last tab", Tab.Player, "The tab the window opens on.");
+            WindowOffset = Config.Bind("General", "Window offset", Vector2.zero, "Where you dragged the window, from the centre of the screen.");
             SpawnFavourites = Config.Bind("Spawn", "Favourites", "", "Prefab names ticked as favourites in the Spawn tab, comma-separated.");
 
             _menuObject = new GameObject("OdinsEye_Menu");

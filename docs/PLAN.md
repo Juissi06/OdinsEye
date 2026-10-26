@@ -30,6 +30,8 @@ One Valheim-style window (Home) for the game's debug and admin commands, instead
    - [x] Spawn favourites (kept in the config) and recently spawned (this session).
    - [x] The game's refusals show in red in the footer; console colour tags stripped so they stay readable.
    - [x] Log a note when a command mod (Server devcommands and the like) is installed.
+   - [x] Hover previews the command; drag the window by its title (saved); toggles no longer smear into a bar; footer shows ">" instead of "&gt;".
+   - [x] Thunderstore icon and Nexus thumbnail (art/, rendered from art/*.html with headless Edge).
    - [ ] Test in single player, a hosted world, and on a dedicated server as admin and not.
 
 ## Open

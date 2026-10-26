@@ -40,7 +40,7 @@ namespace OdinsEye
             if (!Commands.Exists(name)) return false;
             bool was = GUI.enabled;
             GUI.enabled = was && Commands.CanRun(name) && (!adminOnly || Commands.IsAdmin);
-            bool clicked = GUI.Button(r, label);
+            bool clicked = GUI.Button(r, new GUIContent(label, line)); // tooltip: the footer previews the command
             GUI.enabled = was;
             if (!clicked) return false;
             if (confirm != null) Menu.Ask(confirm, line);
@@ -56,7 +56,7 @@ namespace OdinsEye
             if (!Commands.Exists(name)) return;
             bool was = GUI.enabled;
             GUI.enabled = was && Commands.CanRun(name);
-            bool now = GUI.Toggle(r, on, label);
+            bool now = GUI.Toggle(r, on, new GUIContent(label, line));
             GUI.enabled = was;
             if (now != on) Commands.Run(line);
         }

@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Odin's Eye icon</title>
+<style>
+  html, body { margin: 0; width: 256px; height: 256px; overflow: hidden; background: #120c07; }
+  .icon { width: 256px; height: 256px; display: block;
+    background: radial-gradient(circle at 50% 40%, #3a2412 0%, #1d120a 60%, #0e0905 100%); }
+</style>
+</head>
+<body>
+<!-- The same gold eye as the thumbnail, filling the square for Thunderstore. -->
+<svg class="icon" viewBox="0 0 256 256" aria-hidden="true">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff0c4"/><stop offset="0.5" stop-color="#e2b965"/><stop offset="1" stop-color="#8a5a1c"/>
+    </linearGradient>
+  </defs>
+  <circle cx="128" cy="128" r="112" fill="#1a110a" stroke="url(#g)" stroke-width="10"/>
+  <circle cx="128" cy="128" r="96" fill="none" stroke="#e8c77e" stroke-opacity="0.35" stroke-width="3"/>
+  <path d="M40 128 Q128 48 216 128 Q128 208 40 128 Z" fill="#0e0905" stroke="url(#g)" stroke-width="10" stroke-linejoin="round"/>
+  <circle cx="128" cy="128" r="36" fill="url(#g)"/>
+  <circle cx="128" cy="128" r="15" fill="#0e0905"/>
+  <path d="M128 6 V30 M128 226 V250 M6 128 H28 M228 128 H250" stroke="url(#g)" stroke-width="8" stroke-linecap="round"/>
+</svg>
+</body>
+</html>

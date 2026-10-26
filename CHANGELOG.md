@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.1.0
+- Hover a button to see the console command it runs.
+- Drag the window by its title; it remembers where you put it.
 - Inspect tab: what's in the middle of your view, with its prefab, owner, health and more.
 - Spawn favourites and recent spawns.
 - The game's refusals show in red in the footer.
