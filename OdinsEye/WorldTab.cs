@@ -155,7 +155,8 @@ namespace OdinsEye
                 int n = m.Length - 1;
                 float bw = (w - (n - 1) * 4f) / n;
                 for (int i = 1; i <= n; i++)
-                    Widgets.Command(new Rect(x + (i - 1) * (bw + 4f), y, bw, 24f), Short(m[i]), $"setworldmodifier {m[0]} {m[i]}");
+                    Widgets.Command(new Rect(x + (i - 1) * (bw + 4f), y, bw, 24f), Short(m[i]), $"setworldmodifier {m[0]} {m[i]}",
+                        style: Widgets.SmallButton);
                 y += 28f;
             }
             Ui.Label(new Rect(x, y, w, 20f), "Presets", Ui.Small);

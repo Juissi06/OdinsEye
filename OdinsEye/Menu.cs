@@ -38,6 +38,7 @@ namespace OdinsEye
         internal static void Close()
         {
             IsOpen = false;
+            Search.Text = "";
             SearchFocused = false;
             _askText = _askLine = null;
         }
@@ -66,15 +67,33 @@ namespace OdinsEye
                 {
                     Event.current.Use();
                     if (_askText != null) _askText = _askLine = null; // Esc answers "no" first
+                    else if (Search.Showing)
+                    {
+                        Search.Text = ""; // then clears the search
+                        GUIUtility.keyboardControl = 0;
+                    }
                     else Close();
                     return;
                 }
                 var window = new Rect((sw - W) * 0.5f + _offset.x, (sh - H) * 0.5f + _offset.y, W, H);
-                bool asking = _askText != null;
-                if (!asking) Drag(new Rect(window.x, window.y, window.width - Pad - 40f, Pad + TitleH), sw, sh);
+                var searchBox = Search.Box(new Rect(window.x + Pad, window.y + Pad, window.width - Pad * 2f - 40f, TitleH));
+                bool asking = _askText != null, searching = !asking && Search.Showing;
+                if (!asking) Drag(new Rect(window.x, window.y, searchBox.x - 10f - window.x, Pad + TitleH), sw, sh);
+
+                // The search results lie over the tab's content: mouse events over them are hidden from the window
+                // underneath, then handed back for the results, which are drawn last so they paint on top.
+                var e = Event.current;
+                EventType type = e.type;
+                bool overResults = searching && (e.isMouse || type == EventType.ScrollWheel) &&
+                                   Search.ResultsRect(searchBox).Contains(e.mousePosition);
+                if (overResults) e.type = EventType.Ignore;
+                SearchFocused = false; // each tab with a text box sets it again while drawing
                 GUI.enabled = !asking;
-                DrawWindow(window);
+                DrawWindow(window, searchBox);
                 GUI.enabled = true;
+                if (overResults) e.type = type;
+                if (Search.Focused) SearchFocused = true;
+                if (searching) Search.DrawResults(searchBox);
                 if (asking) DrawAsk(window);
             }
             finally
@@ -84,12 +103,23 @@ namespace OdinsEye
             }
         }
 
-        void DrawWindow(Rect r)
+        // Opens a tab (from the search results).
+        internal static void Show(Tab tab)
+        {
+            _tab = tab;
+            SearchFocused = false;
+            Plugin.LastTab.Value = tab;
+        }
+
+        internal static bool IsShown(Tab tab) => VisibleTabs().Contains(tab);
+
+        void DrawWindow(Rect r, Rect searchBox)
         {
             Ui.Window(r);
             float x = r.x + Pad, y = r.y + Pad, inner = r.width - Pad * 2f;
 
             Ui.Label(new Rect(x, y, inner, TitleH), "Odin's Eye", Ui.Title);
+            Search.DrawBox(searchBox);
             if (GUI.Button(new Rect(r.xMax - Pad - 30f, y + 2f, 30f, 26f), "X")) Close();
             y += TitleH;
 
@@ -173,12 +203,22 @@ namespace OdinsEye
         {
             var tabs = VisibleTabs();
             if (!tabs.Contains(_tab)) _tab = tabs[0];
-            float w = (r.width - (tabs.Count - 1) * 6f) / tabs.Count;
+            // Each tab as wide as its (bold) name plus the same share of the spare room, so long names like
+            // "Creatures" fit even with all ten tabs showing.
+            const float gap = 4f;
+            float total = 0f;
+            foreach (var tab in tabs) total += TabWidth(tab);
+            float extra = Mathf.Max(0f, (r.width - (tabs.Count - 1) * gap - total) / tabs.Count);
+            float scale = Mathf.Min(1f, (r.width - (tabs.Count - 1) * gap) / total);
+            float x = r.x;
             for (int i = 0; i < tabs.Count; i++)
             {
                 var tab = tabs[i];
+                float w = TabWidth(tab) * scale + extra;
                 string label = tab == _tab ? $"<color={Ui.Gold}><b>{tab}</b></color>" : tab.ToString();
-                if (GUI.Button(new Rect(r.x + i * (w + 6f), r.y, w, r.height), label) && tab != _tab)
+                var rect = new Rect(x, r.y, w, r.height);
+                x += w + gap;
+                if (GUI.Button(rect, label) && tab != _tab)
                 {
                     _tab = tab;
                     SearchFocused = false;
@@ -186,6 +226,8 @@ namespace OdinsEye
                 }
             }
         }
+
+        static float TabWidth(Tab tab) => GUI.skin.button.CalcSize(new GUIContent($"<b>{tab}</b>")).x + 6f;
 
         // What the game allows right now, and the one step to get further when there is one.
         static void DrawBanner(Rect r)

@@ -101,8 +101,11 @@ namespace OdinsEye
             float level = Mathf.Floor(BaseLevel(type));
             var bar = new Rect(r.x + 190f, r.y + r.height * 0.5f - 6f, r.width - 190f - 86f, 12f);
             Ui.Bar(bar, level / 100f, Ui.GoldColor);
-            // Gear and food can raise a skill on top of its level (SEMan.ModifySkillLevel).
-            int bonus = Mathf.RoundToInt(skills.GetSkillLevel(type) - level);
+            // Gear and food can raise a skill on top of its level. Asked from SEMan directly: Skills.GetSkillLevel
+            // would add every skill you've never used to your character, and the game's skills screen lists them all.
+            float modified = level;
+            Player.m_localPlayer.GetSEMan().ModifySkillLevel(type, ref modified);
+            int bonus = Mathf.RoundToInt(Mathf.Floor(modified) - level);
             string text = $"<b>{level:0}</b>" + (bonus > 0 ? $" <color={Ui.Good}>+{bonus}</color>" : bonus < 0 ? $" <color={Ui.Bad}>{bonus}</color>" : "");
             Ui.Label(new Rect(bar.xMax + 8f, r.y, 78f, r.height), text, Ui.Small);
         }

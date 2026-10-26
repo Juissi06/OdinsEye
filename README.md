@@ -19,7 +19,7 @@ Every button runs the game's own console command, so it follows the game's rules
 - **Inspect:** what's in the middle of your view: name, prefab, position, owner, builder, health, creature level and what it's after. Copy the prefab name or spawn another.
 - **Custom:** your own buttons: a name and one or more console lines, e.g. "Get 50 wood".
 
-Favourites and recent spawns live at the top of the Spawn tab. Hover any button to see the console command it runs, and drag the window by its title to move it.
+Favourites and recent spawns live at the top of the Spawn tab. Search for any feature from the box in the title bar. Hover any button to see the console command it runs, and drag the window by its title to move it.
 
 ## Keys
 | Key | Action |

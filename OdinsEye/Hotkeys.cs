@@ -10,7 +10,8 @@ namespace OdinsEye
         void Update()
         {
             var player = Player.m_localPlayer;
-            if (player == null || Plugin.IsTyping()) return;
+            // TextInput: typing on a sign and the like (it also reports true while the Odin's Eye window is open).
+            if (player == null || Plugin.IsTyping() || TextInput.IsVisible()) return;
             Press(Plugin.KeyGod, "God mode", "god");
             Press(Plugin.KeyGhost, "Ghost mode", "ghost");
             Press(Plugin.KeyFly, "Fly", "fly");

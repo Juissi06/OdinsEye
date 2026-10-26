@@ -72,6 +72,11 @@ namespace OdinsEye
         {
             float x = r.x, w = r.width, y = r.y;
             Ui.Label(new Rect(x, y, w, 26f), $"<color={Ui.Gold}>Fun</color>", Ui.Text);
+            if (GUI.Button(new Rect(x + w - 130f, y, 130f, 24f), new GUIContent("Back to normal", "~Turns every Odin's Eye cheat off: these, learning speeds, keep skills, frozen creatures.")))
+            {
+                GUIUtility.keyboardControl = 0;
+                Cheats.ResetAll();
+            }
             y += 30f;
             bool was = GUI.enabled;
             GUI.enabled = was && Cheats.Allowed;
@@ -97,7 +102,7 @@ namespace OdinsEye
             y += 34f;
 
             string note = Cheats.Allowed
-                ? "Odin's Eye's own cheats: they stop when dev commands are off. Others see your normal size."
+                ? "Odin's Eye's own cheats: they stop when dev commands are off, and everything goes back to normal."
                 : "Odin's Eye's own cheats: they work once cheats are on.";
             GUI.Label(new Rect(x, y, w, r.yMax - y), $"<color={Ui.Muted}>{note}</color>", Widgets.Wrap);
         }

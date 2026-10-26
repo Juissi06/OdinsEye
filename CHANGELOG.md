@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- Search box in the title bar: type any feature ("fly", "weather", "tame") and jump to its tab.
+- "Back to normal" on the Player tab turns every Odin's Eye cheat off at once.
+- Notes wrap onto more lines instead of getting cut off; tabs size to their names.
 - Creatures tab: tame, make neutrals angry, kill tames, passive monsters, freeze creatures, and a list of creatures nearby to tame, untame or kill.
 - Spawn creatures already tamed; bosses ask before spawning.
 - World tab: world modifiers and presets like the world creation screen, and every world key to see, set or remove.

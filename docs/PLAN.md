@@ -53,7 +53,7 @@ off with dev commands.
 - [x] **Food** (console): what you've eaten and how long it lasts, empty your stomach (`puke`).
 
 ### Fun cheats (new; done in 0.2 on the Player tab)
-- [x] **Giant and Tiny:** scale your character from 0.25x to 4x. Other players see your real size, since size isn't saved in the world.
+- [x] **Giant and Tiny:** scale your character from 0.25x to 4x. Whether other players see it depends on whether the game syncs the player's scale; not checked yet.
 - [x] **Super jump** (with **no fall damage** as its own switch), **super speed** (walk, run, crouch and swim), **super knockback** on your hits, **one-hit kills** (creatures only, never players).
 - [x] **Infinite stamina**, **no carry weight limit**, **no wear** (everything you carry stays at full durability).
 - [x] **Night vision:** brighter ambient light at night and in caves.

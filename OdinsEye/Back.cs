@@ -10,21 +10,22 @@ namespace OdinsEye
     {
         const int Max = 10;
         static readonly List<Vector3> History = new List<Vector3>();
-        static Player _for;
+        static ZNet _for;
         static bool _goingBack;
 
         internal static bool Any => Valid() && History.Count > 0;
 
         internal static Vector3 Last => History[History.Count - 1];
 
+        // The history belongs to one world session; dying and respawning keeps it.
         static bool Valid()
         {
-            if (Player.m_localPlayer != _for)
+            if (ZNet.instance != _for)
             {
-                _for = Player.m_localPlayer;
+                _for = ZNet.instance;
                 History.Clear();
             }
-            return _for != null;
+            return _for != null && Player.m_localPlayer != null;
         }
 
         internal static void Remember(Vector3 from, Vector3 to)

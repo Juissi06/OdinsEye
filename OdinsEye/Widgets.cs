@@ -19,28 +19,48 @@ namespace OdinsEye
             }
         }
 
+        static GUIStyle _smallButton;
+        static GUISkin _smallButtonFor;
+
+        // The window's button with a smaller font, for rows of many narrow buttons.
+        internal static GUIStyle SmallButton
+        {
+            get
+            {
+                if (_smallButton == null || _smallButtonFor != GUI.skin)
+                {
+                    _smallButtonFor = GUI.skin;
+                    _smallButton = new GUIStyle(GUI.skin.button) { fontSize = 12, padding = new RectOffset(2, 2, 2, 2) };
+                }
+                return _smallButton;
+            }
+        }
+
         internal static void Header(float x, ref float y, float w, string text)
         {
             Ui.Label(new Rect(x, y, w, HeaderH), $"<color={Ui.Gold}>{text}</color>", Ui.Text);
             y += HeaderH;
         }
 
+        // Muted note under a control; wraps onto more lines when it doesn't fit the column.
         internal static void Note(float x, ref float y, float w, string text)
         {
-            Ui.Label(new Rect(x, y, w, 20f), $"<color={Ui.Muted}>{text}</color>", Ui.Small);
-            y += 22f;
+            var content = new GUIContent($"<color={Ui.Muted}>{text}</color>");
+            float h = Mathf.Max(20f, Wrap.CalcHeight(content, w));
+            GUI.Label(new Rect(x, y, w, h), content, Wrap);
+            y += h + 2f;
         }
 
         // Runs line when clicked; greyed out unless the game accepts the command. confirm != null asks first.
         // adminOnly: commands the client always accepts but the server refuses unless you're an admin
         // (kick, ban, save), so grey them out for everyone else instead of sending a request that fails.
-        internal static bool Command(Rect r, string label, string line, string confirm = null, bool adminOnly = false)
+        internal static bool Command(Rect r, string label, string line, string confirm = null, bool adminOnly = false, GUIStyle style = null)
         {
             string name = line.Split(' ')[0];
             if (!Commands.Exists(name)) return false;
             bool was = GUI.enabled;
             GUI.enabled = was && Commands.CanRun(name) && (!adminOnly || Commands.IsAdmin);
-            bool clicked = GUI.Button(r, new GUIContent(label, line)); // tooltip: the footer previews the command
+            bool clicked = GUI.Button(r, new GUIContent(label, line), style ?? GUI.skin.button); // tooltip: the footer previews the command
             GUI.enabled = was;
             if (!clicked) return false;
             // Unity keeps showing the tooltip of the focused control, so drop focus or the footer sticks on this command.

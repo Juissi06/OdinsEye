@@ -57,7 +57,7 @@ namespace OdinsEye
             SkillSpeeds = Config.Bind("Cheats", "Skill speed per skill", "",
                 "Skills with their own speed instead of \"Skill speed\", as skill number=speed, comma-separated. Set from the Skills tab.");
             KeepSkills = Config.Bind("Cheats", "Keep skills on death", false, "Dying doesn't lower your skills. Only while cheats are on.");
-            FunSize = Config.Bind("Fun", "Size", 1f, new ConfigDescription("Your size. Other players see your normal size.", new AcceptableValueRange<float>(0.25f, 4f)));
+            FunSize = Config.Bind("Fun", "Size", 1f, new ConfigDescription("Your size.", new AcceptableValueRange<float>(0.25f, 4f)));
             FunJump = Config.Bind("Fun", "Jump", 1f, new ConfigDescription("Jump strength.", new AcceptableValueRange<float>(1f, 10f)));
             FunSpeed = Config.Bind("Fun", "Speed", 1f, new ConfigDescription("Walking, running, crouching and swimming speed.", new AcceptableValueRange<float>(1f, 5f)));
             FunShip = Config.Bind("Fun", "Ship speed", 1f, new ConfigDescription("Sailing and rowing speed of the ship you steer.", new AcceptableValueRange<float>(1f, 5f)));

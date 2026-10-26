@@ -52,6 +52,23 @@ namespace OdinsEye
             Plugin.SkillSpeeds.Value = string.Join(",", parts.ToArray());
         }
 
+        // Every Odin's Eye cheat back to its default (the game's own cheats have their own switches).
+        internal static void ResetAll()
+        {
+            foreach (var entry in new[] { Plugin.FunSize, Plugin.FunJump, Plugin.FunSpeed, Plugin.FunShip, Plugin.XpMultiplier })
+                entry.Value = (float)entry.DefaultValue;
+            foreach (var entry in new[]
+                     {
+                         Plugin.FunStamina, Plugin.FunNoWeight, Plugin.FunNoWear, Plugin.FunNoFall, Plugin.FunNightVision, Plugin.FunOneHit,
+                         Plugin.FunKnockback, Plugin.FunInstantCraft, Plugin.KeepSkills
+                     })
+                entry.Value = (bool)entry.DefaultValue;
+            Plugin.SkillSpeeds.Value = "";
+            CreaturesTab.Frozen = false;
+            Commands.LastCommand = "Back to normal";
+            Commands.LastOutput = "every Odin's Eye cheat is off";
+        }
+
         internal static bool KeepSkills => Allowed && Plugin.KeepSkills.Value;
 
         internal static bool IsLocal(Skills skills) => Player.m_localPlayer != null && skills == Player.m_localPlayer.GetSkills();
