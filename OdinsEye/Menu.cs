@@ -28,6 +28,7 @@ namespace OdinsEye
         internal static void Open()
         {
             IsOpen = true;
+            GUIUtility.keyboardControl = 0;
             _tab = Plugin.LastTab.Value;
             _offset = Plugin.WindowOffset.Value;
         }

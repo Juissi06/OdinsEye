@@ -68,7 +68,7 @@ namespace OdinsEye
 
             y += 6f;
             Widgets.Header(x, ref y, w, "Difficulty");
-            Widgets.Note(x, ref y, w, "Count enemies as if this many players were near (0 = real count)");
+            Widgets.Note(x, ref y, w, "Enemies scale as if this many players were near");
             _players = GUI.HorizontalSlider(new Rect(x, y + 8f, w - 100f, 16f), _players, 0f, 10f);
             int count = Mathf.RoundToInt(_players);
             Widgets.Command(new Rect(x + w - 90f, y, 90f, Widgets.RowH - 4f), count == 0 ? "Real" : $"{count} players", "players " + count);
@@ -100,7 +100,7 @@ namespace OdinsEye
             y += Widgets.RowH + 4f;
 
             Widgets.Header(x, ref y, w, "Delete around you");
-            Widgets.Note(x, ref y, w, "Removes everything nearby: pieces, trees, rocks, items. No undo, make a backup!");
+            Widgets.Note(x, ref y, w, "Removes everything nearby. No undo, back up first!");
             _deleteRadius = GUI.HorizontalSlider(new Rect(x + 90f, y + 6f, w - 90f, 16f), _deleteRadius, 1f, 50f);
             Ui.Label(new Rect(x, y, 90f, 22f), $"Radius {Mathf.RoundToInt(_deleteRadius)} m", Ui.Small);
             y += 26f;

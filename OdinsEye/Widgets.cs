@@ -43,6 +43,8 @@ namespace OdinsEye
             bool clicked = GUI.Button(r, new GUIContent(label, line)); // tooltip: the footer previews the command
             GUI.enabled = was;
             if (!clicked) return false;
+            // Unity keeps showing the tooltip of the focused control, so drop focus or the footer sticks on this command.
+            GUIUtility.keyboardControl = 0;
             if (confirm != null) Menu.Ask(confirm, line);
             else Commands.Run(line);
             return true;
@@ -58,7 +60,9 @@ namespace OdinsEye
             GUI.enabled = was && Commands.CanRun(name);
             bool now = GUI.Toggle(r, on, new GUIContent(label, line));
             GUI.enabled = was;
-            if (now != on) Commands.Run(line);
+            if (now == on) return;
+            GUIUtility.keyboardControl = 0;
+            Commands.Run(line);
         }
 
         // Row of equal-width command buttons: labels[i] runs lines[i].
