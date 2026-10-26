@@ -67,9 +67,12 @@ namespace OdinsEye
         {
             var lines = Split(line);
             bool can = lines.Count > 0 && lines.All(l => Commands.CanRun(l.Split(' ')[0]));
+            // A greyed-out button says why in the footer: a misspelt command, or one the game won't run right now.
+            string unknown = lines.Select(l => l.Split(' ')[0]).FirstOrDefault(c => !Commands.Exists(c));
+            string tip = unknown != null ? $"~\"{unknown}\" isn't a console command" : can ? line : $"~The game won't run this right now: {line}";
             bool was = GUI.enabled;
             GUI.enabled = was && can;
-            bool clicked = GUI.Button(r, new GUIContent(label, line));
+            bool clicked = GUI.Button(r, new GUIContent(label, tip));
             GUI.enabled = was;
             if (!clicked) return;
             GUIUtility.keyboardControl = 0;
@@ -94,7 +97,11 @@ namespace OdinsEye
             GUI.SetNextControlName(LineControl);
             _line = GUI.TextField(new Rect(x, y, w, 26f), _line ?? "", 200);
             y += 30f;
-            GUI.Label(new Rect(x, y, w, 56f), $"<color={Ui.Muted}>Several at once: separate them with ;  e.g. spawn Wood 50; spawn Stone 50</color>", Widgets.Wrap);
+            string unknownCommand = Split(_line).Select(l => l.Split(' ')[0]).FirstOrDefault(c => !Commands.Exists(c));
+            string help = unknownCommand != null
+                ? $"<color={Ui.Bad}>\"{unknownCommand}\" isn't a console command.</color>"
+                : $"<color={Ui.Muted}>Several at once: separate them with ;  e.g. spawn Wood 50; spawn Stone 50</color>";
+            GUI.Label(new Rect(x, y, w, 56f), help, Widgets.Wrap);
             y += 58f;
 
             bool was = GUI.enabled;

@@ -1,27 +1,32 @@
 # Changelog
 
-## Unreleased
-- The footer no longer keeps showing an old hint after you click a button, and clicked buttons don't stay highlighted.
-- Inspect names the ground "Terrain" with its biome instead of "_Zone".
+## 0.2.0
+New tabs
+- Skills: every skill with its level, modded skills too. Set any level, step it up or down, max or reset it, or all skills at once.
+- Buffs: every status effect with its icon and search, add one or clear them all. Guardian powers with the cooldown reset, your food and "empty stomach".
+- Creatures: tame, make neutrals angry, kill tames, passive monsters, freeze creatures, and the creatures nearby to tame, untame or kill one by one.
+- Custom: your own buttons from any console line, or several separated by ";".
+
+Odin's Eye's own cheats (only while the game allows cheats; "Back to normal" turns them all off)
+- Fun: size (x0.25 to x4), jump, speed, ship speed, infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback, instant crafting.
+- Learn faster (x2 to x25), for all skills or each skill on its own, and keep skills when you die.
+
+More
 - Search box in the title bar: type any feature ("fly", "weather", "tame") and jump to its tab.
-- "Back to normal" on the Player tab turns every Odin's Eye cheat off at once.
-- Notes wrap onto more lines instead of getting cut off; tabs size to their names.
-- Creatures tab: tame, make neutrals angry, kill tames, passive monsters, freeze creatures, and a list of creatures nearby to tame, untame or kill.
-- Spawn creatures already tamed; bosses ask before spawning.
 - World tab: world modifiers and presets like the world creation screen, and every world key to see, set or remove.
+- Spawn creatures already tamed; bosses ask before spawning.
+- Teleport tab: Back to where you were before your last teleport (portals and dungeon doors too).
 - Admin tab: repair every building within 30 m.
-- Ship speed slider (Fun): faster sailing and rowing on the ship you steer.
-- Skills: a learning speed for each skill on its own, and skills added by other mods can be set too.
-- The mouse wheel no longer zooms the camera while the window is open.
-- Switches that are on now show green, box and label, and no longer leave a grey bar after you click them. Longer notes no longer get cut off.
-- Custom tab: make your own buttons from any console line, or several separated by ";".
-- Back: teleport back to where you were before your last teleport (also after portals and dungeon doors).
-- Hotkeys for god mode, ghost mode, fly, no build cost and Back, without opening the window (unbound until you set them in the config).
+- Hotkeys for god mode, ghost mode, fly, no build cost and Back (unbound until you set them in the config).
 - Config: hide tabs you don't use, and turn off the "are you sure" questions.
-- Fun cheats on the Player tab: size (x0.25 to x4), jump (up to x10), speed (up to x5), infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback, instant crafting. Only while the game allows cheats.
-- Skills tab: every skill with its level; set a skill to any level, step it up or down, max or reset it, or all skills at once.
-- Learn faster (x2 to x25) and keep skills when you die: Odin's Eye's own cheats, only while the game allows cheats.
-- Buffs tab: every status effect with its icon and search, add one or clear them all; guardian powers with the cooldown reset; your food and "empty stomach".
+- Inspect names the ground "Terrain" with its biome.
+
+Fixes
+- The mouse wheel no longer zooms the camera while the window is open.
+- Switches that are on show green, and no longer leave a grey bar after a click.
+- The footer no longer keeps an old hint after you click a button, and clicked buttons don't stay highlighted.
+- Notes wrap instead of getting cut off; tabs size to their names.
+- Custom buttons that can't run say why in the footer.
 
 ## 0.1.1
 - The achievements switch is now called "Achievements even with cheats" and says what it really does: while it's on you can earn achievements again, even on a character that used cheats.
