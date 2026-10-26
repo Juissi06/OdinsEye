@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Fun cheats on the Player tab: size (x0.25 to x4), jump (up to x10), speed (up to x5), infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback, instant crafting. Only while the game allows cheats.
 - Skills tab: every skill with its level; set a skill to any level, step it up or down, max or reset it, or all skills at once.
 - Learn faster (x2 to x25) and keep skills when you die: Odin's Eye's own cheats, only while the game allows cheats.
 - Buffs tab: every status effect with its icon and search, add one or clear them all; guardian powers with the cooldown reset; your food and "empty stomach".

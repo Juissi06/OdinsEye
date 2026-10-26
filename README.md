@@ -8,7 +8,7 @@ Every button runs the game's own console command, so it follows the game's rules
 - Before the first cheat, the window warns that the character will count as cheated for achievements.
 
 ## Tabs
-- **Player:** god, ghost, fly, no build cost, heal, and the game's own switch that turns achievements back on after using cheats.
+- **Player:** god, ghost, fly, no build cost, heal, and the game's own switch that turns achievements back on after using cheats. Fun cheats: giant or tiny, super jump, super speed, infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback and instant crafting.
 - **Skills:** every skill with its level. Set any skill to any level, raise or reset them all. Learn skills up to 25 times faster, and keep your skills when you die.
 - **Buffs:** every status effect in the game with its icon, to add or clear. Pick any guardian power with its cooldown reset, and empty your stomach to try other food.
 - **Spawn:** every item and creature with icons, categories and search. Pick an amount and quality (or stars for creatures) and spawn it in front of you or straight into your inventory. Premade item sets too.

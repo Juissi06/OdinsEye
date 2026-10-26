@@ -23,6 +23,8 @@ namespace OdinsEye
         internal static ConfigEntry<Vector2> WindowOffset;
         internal static ConfigEntry<float> XpMultiplier;
         internal static ConfigEntry<bool> KeepSkills;
+        internal static ConfigEntry<float> FunSize, FunJump, FunSpeed;
+        internal static ConfigEntry<bool> FunStamina, FunNoWeight, FunNoWear, FunNoFall, FunNightVision, FunOneHit, FunKnockback, FunInstantCraft;
         internal static ManualLogSource Log;
 
         Harmony _harmony;
@@ -40,12 +42,24 @@ namespace OdinsEye
             XpMultiplier = Config.Bind("Cheats", "Skill speed", 1f,
                 new ConfigDescription("Skills level this many times faster. Only while cheats are on.", new AcceptableValueRange<float>(0f, 100f)));
             KeepSkills = Config.Bind("Cheats", "Keep skills on death", false, "Dying doesn't lower your skills. Only while cheats are on.");
+            FunSize = Config.Bind("Fun", "Size", 1f, new ConfigDescription("Your size. Other players see your normal size.", new AcceptableValueRange<float>(0.25f, 4f)));
+            FunJump = Config.Bind("Fun", "Jump", 1f, new ConfigDescription("Jump strength.", new AcceptableValueRange<float>(1f, 10f)));
+            FunSpeed = Config.Bind("Fun", "Speed", 1f, new ConfigDescription("Walking, running, crouching and swimming speed.", new AcceptableValueRange<float>(1f, 5f)));
+            FunStamina = Config.Bind("Fun", "Infinite stamina", false, "Nothing uses stamina.");
+            FunNoWeight = Config.Bind("Fun", "No weight limit", false, "Never overweight.");
+            FunNoWear = Config.Bind("Fun", "No wear", false, "Tools, weapons and armour stay at full durability.");
+            FunNoFall = Config.Bind("Fun", "No fall damage", false, "Falls don't hurt.");
+            FunNightVision = Config.Bind("Fun", "Night vision", false, "See at night and in caves without a torch.");
+            FunOneHit = Config.Bind("Fun", "One-hit kills", false, "Your hits kill any creature.");
+            FunKnockback = Config.Bind("Fun", "Super knockback", false, "Your hits send creatures flying.");
+            FunInstantCraft = Config.Bind("Fun", "Instant crafting", false, "Crafting and upgrading at stations finish right away.");
             SpawnFavourites = Config.Bind("Spawn", "Favourites", "", "Prefab names ticked as favourites in the Spawn tab, comma-separated.");
 
             _menuObject = new GameObject("OdinsEye_Menu");
             DontDestroyOnLoad(_menuObject);
             _menuObject.AddComponent<Menu>();
             _menuObject.AddComponent<MapPickHint>();
+            _menuObject.AddComponent<Fun>();
 
             _harmony = new Harmony(Guid);
             _harmony.PatchAll(typeof(Plugin).Assembly);
