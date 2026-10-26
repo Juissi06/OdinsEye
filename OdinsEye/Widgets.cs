@@ -36,6 +36,22 @@ namespace OdinsEye
             }
         }
 
+        static GUIStyle _suggestion;
+
+        // A list row that's just text: left-aligned, one line, cut off at the end, gold on hover.
+        internal static GUIStyle SuggestionStyle
+        {
+            get
+            {
+                if (_suggestion == null)
+                {
+                    _suggestion = new GUIStyle(Ui.Small) { wordWrap = false, clipping = TextClipping.Clip, padding = new RectOffset(6, 4, 1, 1) };
+                    _suggestion.hover.textColor = Ui.GoldColor;
+                }
+                return _suggestion;
+            }
+        }
+
         internal static void Header(float x, ref float y, float w, string text)
         {
             Ui.Label(new Rect(x, y, w, HeaderH), $"<color={Ui.Gold}>{text}</color>", Ui.Text);

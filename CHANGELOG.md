@@ -5,7 +5,7 @@ New tabs
 - Skills: every skill with its level, modded skills too. Set any level, step it up or down, max or reset it, or all skills at once.
 - Buffs: every status effect with its icon and search, add one or clear them all. Guardian powers with the cooldown reset, your food and "empty stomach".
 - Creatures: tame, make neutrals angry, kill tames, passive monsters, freeze creatures, and the creatures nearby to tame, untame or kill one by one.
-- Custom: your own buttons from any console line, or several separated by ";".
+- Custom: your own buttons from any console line, or several separated by ";". Suggestions while you type: commands with what they do, then their options (items, skills, biomes...). Tab takes the first one.
 
 Odin's Eye's own cheats (only while the game allows cheats; "Back to normal" turns them all off)
 - Fun: size (x0.25 to x4), jump, speed, ship speed, infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback, instant crafting.
@@ -13,7 +13,7 @@ Odin's Eye's own cheats (only while the game allows cheats; "Back to normal" tur
 
 More
 - Search box in the title bar: type any feature ("fly", "weather", "tame") and jump to its tab.
-- World tab: world modifiers and presets like the world creation screen, and every world key to see, set or remove.
+- World tab: world modifiers and presets like the world creation screen, unlock all recipes and building pieces, and every world key to see, set or remove.
 - Spawn creatures already tamed; bosses ask before spawning.
 - Teleport tab: Back to where you were before your last teleport (portals and dungeon doors too).
 - Admin tab: repair every building within 30 m.

@@ -45,6 +45,7 @@ namespace OdinsEye
             E(Tab.World, "Remove drops", "removedrops items fish birds"), E(Tab.World, "No monster spawns", "nospawn"),
             E(Tab.World, "Boss progress", "keys defeated"), E(Tab.World, "World modifiers", "difficulty combat resources raids portals death penalty"),
             E(Tab.World, "World presets", "casual hardcore immersive hammer reset default"), E(Tab.World, "World keys", "setkey removekey global key"),
+            E(Tab.World, "Unlock all recipes and building pieces", "unlock recipes pieces buildings crafting known"),
             E(Tab.Teleport, "Pick a spot on the map", "goto map teleport"), E(Tab.Teleport, "Back", "return previous teleport"),
             E(Tab.Teleport, "Saved spots", "waypoint home"), E(Tab.Teleport, "Traders", "haldor hildir bog witch vendor"),
             E(Tab.Teleport, "Boss altars", "findtp boss location"), E(Tab.Teleport, "Locations", "findtp dungeon"),

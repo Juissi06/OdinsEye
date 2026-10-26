@@ -4,7 +4,7 @@
 Valheim's debug and admin commands in one window: spawn items and creatures, time and weather, teleport, server admin and more. Follows the game's own cheat rules.
 
 ## Changelog / file description (0.2.0)
-New Skills, Buffs, Creatures and Custom tabs; fun cheats (size, jump, speed, ship speed, infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback, instant crafting); faster learning per skill; keep skills on death; search box; world modifiers and keys; spawn tamed; Back teleport; repair buildings; hotkeys; fixes.
+New Skills, Buffs, Creatures and Custom tabs; fun cheats (size, jump, speed, ship speed, infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback, instant crafting); faster learning per skill; keep skills on death; search box; world modifiers and keys; unlock all recipes and pieces; console suggestions for your own buttons; spawn tamed; Back teleport; repair buildings; hotkeys; fixes.
 
 ## Changelog / file description (0.1.1)
 - The achievements switch now says what it really does: while it's on you can earn achievements again, even on a character that used cheats

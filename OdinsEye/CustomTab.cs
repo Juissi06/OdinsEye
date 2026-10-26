@@ -79,6 +79,86 @@ namespace OdinsEye
             foreach (var l in lines) Commands.Run(l);
         }
 
+        // ---------- Suggestions while typing the console line ----------
+
+        const float SuggestH = 124f, SuggestRowH = 20f;
+        const int MaxSuggestions = 5;
+        static bool _moveToEnd;
+
+        class Suggestion
+        {
+            internal string Text, Note;
+        }
+
+        // What fits the word being typed: command names first, then that command's options (item and creature
+        // names for spawn, skills for raiseskill...), the same list the game's console offers on Tab.
+        static List<Suggestion> Suggestions(string line)
+        {
+            var list = new List<Suggestion>();
+            string part = line.Substring(line.LastIndexOf(';') + 1).TrimStart();
+            int space = part.IndexOf(' ');
+            if (space < 0)
+            {
+                if (part.Length == 0) return list;
+                string q = part.ToLowerInvariant();
+                foreach (var c in Commands.Visible().Where(c => c.Command.StartsWith(q)).OrderBy(c => c.Command))
+                {
+                    if (c.Command == q) continue;
+                    list.Add(new Suggestion { Text = c.Command, Note = c.Description });
+                    if (list.Count >= MaxSuggestions) break;
+                }
+                return list;
+            }
+            // Only the first word after the command has options in the game's list.
+            string name = part.Substring(0, space);
+            string rest = part.Substring(space + 1);
+            if (rest.Contains(" ") || Commands.Find(name) == null) return list;
+            string a = rest.ToLowerInvariant();
+            foreach (var option in Commands.Options(name).Where(o => o.ToLowerInvariant().StartsWith(a)).OrderBy(o => o.Length).ThenBy(o => o))
+            {
+                if (option.ToLowerInvariant() == a) continue;
+                list.Add(new Suggestion { Text = option });
+                if (list.Count >= MaxSuggestions) break;
+            }
+            return list;
+        }
+
+        // Replaces the word being typed with the suggestion and a space.
+        static void Accept(string text)
+        {
+            string line = _line ?? "";
+            int cut = Mathf.Max(line.LastIndexOf(' '), line.LastIndexOf(';')) + 1;
+            _line = line.Substring(0, cut) + text + " ";
+            GUI.FocusControl(LineControl);
+            _moveToEnd = true;
+        }
+
+        static void DrawSuggestions(Rect r)
+        {
+            string line = _line ?? "";
+            var found = Suggestions(line);
+            if (found.Count == 0)
+            {
+                // No word to complete: the command's own syntax as a reminder, or a problem, or the basics.
+                string part = line.Substring(line.LastIndexOf(';') + 1).Trim();
+                var command = Commands.Find(part.Split(' ')[0]);
+                string unknown = Split(line).Select(l => l.Split(' ')[0]).FirstOrDefault(c => !Commands.Exists(c));
+                string help = unknown != null ? $"<color={Ui.Bad}>\"{unknown}\" isn't a console command.</color>"
+                    : command != null ? $"<color={Ui.Gold}>{command.Command}</color> <color={Ui.Muted}>{command.Description}</color>"
+                    : $"<color={Ui.Muted}>Start typing a console command: suggestions show up here. Tab takes the first one. Several at once: separate them with ;</color>";
+                GUI.Label(r, help, Widgets.Wrap);
+                return;
+            }
+            Ui.Inset(r);
+            for (int i = 0; i < found.Count; i++)
+            {
+                var s = found[i];
+                var row = new Rect(r.x + 4f, r.y + 4f + i * (SuggestRowH + 3f), r.width - 8f, SuggestRowH);
+                string text = s.Note != null ? $"{s.Text}  <color={Ui.Muted}>{s.Note}</color>" : s.Text;
+                if (GUI.Button(row, new GUIContent(text, "~Tab or click to use it"), Widgets.SuggestionStyle)) Accept(s.Text);
+            }
+        }
+
         static List<string> Split(string line) =>
             line.Split(';').Select(l => l.Trim()).Where(l => l.Length > 0).ToList();
 
@@ -94,15 +174,31 @@ namespace OdinsEye
             y += 32f;
             Ui.Label(new Rect(x, y, w, 20f), "Console line", Ui.Small);
             y += 20f;
+            // Tab takes the first suggestion, like the game's console (and stops Tab moving focus away).
+            var e = Event.current;
+            if (e.type == EventType.KeyDown && (e.keyCode == KeyCode.Tab || e.character == '	') && GUI.GetNameOfFocusedControl() == LineControl)
+            {
+                // Unity sends Tab as a key event and again as a typed character; only the key event completes.
+                if (e.keyCode == KeyCode.Tab)
+                {
+                    var first = Suggestions(_line ?? "");
+                    if (first.Count > 0) Accept(first[0].Text);
+                }
+                e.Use();
+            }
             GUI.SetNextControlName(LineControl);
             _line = GUI.TextField(new Rect(x, y, w, 26f), _line ?? "", 200);
+            if (_moveToEnd && GUI.GetNameOfFocusedControl() == LineControl)
+            {
+                // After a suggestion the cursor goes to the end, ready for the next word.
+                _moveToEnd = false;
+                var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+                editor.text = _line;
+                editor.MoveTextEnd();
+            }
             y += 30f;
-            string unknownCommand = Split(_line).Select(l => l.Split(' ')[0]).FirstOrDefault(c => !Commands.Exists(c));
-            string help = unknownCommand != null
-                ? $"<color={Ui.Bad}>\"{unknownCommand}\" isn't a console command.</color>"
-                : $"<color={Ui.Muted}>Several at once: separate them with ;  e.g. spawn Wood 50; spawn Stone 50</color>";
-            GUI.Label(new Rect(x, y, w, 56f), help, Widgets.Wrap);
-            y += 58f;
+            DrawSuggestions(new Rect(x, y, w, SuggestH));
+            y += SuggestH + 4f;
 
             bool was = GUI.enabled;
             GUI.enabled = was && Commands.LastCommand != null;

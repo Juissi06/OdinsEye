@@ -59,6 +59,15 @@ namespace OdinsEye
             }
         }
 
+        // Every command the console knows, for suggestions while typing. Secret ones stay hidden, as in the console.
+        internal static IEnumerable<Terminal.ConsoleCommand> Visible()
+        {
+            foreach (var command in All().Values)
+                if (!command.IsSecret) yield return command;
+        }
+
+        internal static Terminal.ConsoleCommand Find(string name) => All().TryGetValue(name, out var command) ? command : null;
+
         // A command this game version doesn't have hides its button instead of failing.
         internal static bool Exists(string name) => All().ContainsKey(name);
 

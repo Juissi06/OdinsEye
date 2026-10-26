@@ -126,6 +126,16 @@ namespace OdinsEye
                 if (i % 2 == 1 || i == BossKeys.Length - 1) y += 28f;
             }
 
+            // The game's own world settings that unlock everything, as on the world creation screen.
+            y += 6f;
+            Widgets.Header(x, ref y, w, "Unlocks");
+            bool recipes = zones != null && zones.GetGlobalKey(GlobalKeys.AllRecipesUnlocked);
+            bool pieces = zones != null && zones.GetGlobalKey(GlobalKeys.AllPiecesUnlocked);
+            Widgets.Switch(new Rect(x, y + 4f, half, 24f), "All recipes", recipes, "setkey AllRecipesUnlocked", "removekey AllRecipesUnlocked");
+            Widgets.Switch(new Rect(x + half + 6f, y + 4f, half, 24f), "All building pieces", pieces, "setkey AllPiecesUnlocked", "removekey AllPiecesUnlocked");
+            y += 30f;
+            Widgets.Note(x, ref y, w, "For everyone in this world while on. Crafting still needs the right station.");
+
             y += 6f;
             y = Keys(x, y, w);
             return y;
