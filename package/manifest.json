@@ -1,0 +1,9 @@
+{
+  "name": "Odins_Eye",
+  "version_number": "$version$",
+  "website_url": "",
+  "description": "One Valheim-style window for the game's debug and admin commands. Every button runs the game's own console command, so it follows the game's rules.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2351"
+  ]
+}
