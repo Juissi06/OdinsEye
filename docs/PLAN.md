@@ -75,12 +75,12 @@ off with dev commands.
 ### Player and character
 - **Appearance** (console): change hair, beard and body model on the spot (`hair`, `beard`, `model`).
 - **Bigger inventory** (console: `inventorysize`), with a warning that items may drop if you shrink it.
-- **Back:** teleport back to where you were before the last teleport.
+- [x] **Back** (Teleport tab and a hotkey): back to where you were before the last teleport, portals and dungeon doors included.
 
 ### The window itself
-- **Your own buttons:** save any console line as a button with a name, e.g. "Get 50 wood" or a raid you test often.
-- **Hotkeys** for the most used switches (god, fly, ghost, no cost) without opening the window.
-- **Hide tabs** you don't use, and an option to skip the "are you sure" questions.
+- [x] **Your own buttons** (Custom tab): any console line, or several separated by ";", as a named button. Kept in BepInEx/config/OdinsEye.buttons.txt.
+- [x] **Hotkeys** for god, fly, ghost, no cost and Back, without opening the window. Unbound by default.
+- [x] **Hide tabs** you don't use, and an option to skip the "are you sure" questions (config).
 - **Compact mode:** a small always-on bar of your favourite switches while you play.
 
 ## Open

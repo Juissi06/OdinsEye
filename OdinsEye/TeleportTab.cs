@@ -54,7 +54,13 @@ namespace OdinsEye
             {
                 bool was = GUI.enabled;
                 GUI.enabled = was && Commands.CanRun("goto");
-                if (GUI.Button(new Rect(x, y, w, Widgets.RowH - 4f), "Pick a spot on the map")) StartPicking();
+                if (GUI.Button(new Rect(x, y, w - 130f, Widgets.RowH - 4f), "Pick a spot on the map")) StartPicking();
+                GUI.enabled = was && Commands.CanRun("goto") && Back.Any;
+                if (GUI.Button(new Rect(x + w - 124f, y, 124f, Widgets.RowH - 4f), new GUIContent("Back", Back.Line ?? "~Where you were before your last teleport")))
+                {
+                    GUIUtility.keyboardControl = 0;
+                    Back.Go();
+                }
                 GUI.enabled = was;
                 y += Widgets.RowH;
             }

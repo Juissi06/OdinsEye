@@ -151,7 +151,7 @@ namespace OdinsEye
             if (!Cheats.Allowed) note = "These two are Odin's Eye's own cheats: they work once cheats are on.";
             else if (!Mathf.Approximately(Game.m_skillGainRate, 1f)) note = $"The world's own skill speed is x{Game.m_skillGainRate:0.##}; this multiplies on top.";
             else note = "Odin's Eye's own cheats: they stop when dev commands are turned off.";
-            GUI.Label(new Rect(x, y, w, 40f), $"<color={Ui.Muted}>{note}</color>", Widgets.Wrap);
+            GUI.Label(new Rect(x, y, w, 64f), $"<color={Ui.Muted}>{note}</color>", Widgets.Wrap);
         }
     }
 }

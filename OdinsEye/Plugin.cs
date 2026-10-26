@@ -21,6 +21,9 @@ namespace OdinsEye
         internal static ConfigEntry<Tab> LastTab;
         internal static ConfigEntry<string> SpawnFavourites;
         internal static ConfigEntry<Vector2> WindowOffset;
+        internal static ConfigEntry<bool> AskFirst;
+        internal static ConfigEntry<string> HiddenTabs;
+        internal static ConfigEntry<KeyboardShortcut> KeyGod, KeyGhost, KeyFly, KeyNoCost, KeyBack;
         internal static ConfigEntry<float> XpMultiplier;
         internal static ConfigEntry<bool> KeepSkills;
         internal static ConfigEntry<float> FunSize, FunJump, FunSpeed;
@@ -39,6 +42,15 @@ namespace OdinsEye
                 new ConfigDescription("Size of the window.", new AcceptableValueRange<float>(0.5f, 2f)));
             LastTab = Config.Bind("General", "Last tab", Tab.Player, "The tab the window opens on.");
             WindowOffset = Config.Bind("General", "Window offset", Vector2.zero, "Where you dragged the window, from the centre of the screen.");
+            AskFirst = Config.Bind("General", "Ask before destructive actions", true,
+                "Ask \"are you sure\" before killing everything, deleting, dropping your items and so on.");
+            HiddenTabs = Config.Bind("General", "Hidden tabs", "",
+                "Tabs you don't use, comma-separated, e.g. \"Admin, Inspect\". Names: " + string.Join(", ", System.Enum.GetNames(typeof(Tab))));
+            KeyGod = Config.Bind("Hotkeys", "God mode", KeyboardShortcut.Empty, "Turns god mode on or off without opening the window.");
+            KeyGhost = Config.Bind("Hotkeys", "Ghost mode", KeyboardShortcut.Empty, "Turns ghost mode on or off without opening the window.");
+            KeyFly = Config.Bind("Hotkeys", "Fly", KeyboardShortcut.Empty, "Turns flying on or off without opening the window.");
+            KeyNoCost = Config.Bind("Hotkeys", "No build cost", KeyboardShortcut.Empty, "Turns no build cost on or off without opening the window.");
+            KeyBack = Config.Bind("Hotkeys", "Back", KeyboardShortcut.Empty, "Teleports back to where you were before your last teleport.");
             XpMultiplier = Config.Bind("Cheats", "Skill speed", 1f,
                 new ConfigDescription("Skills level this many times faster. Only while cheats are on.", new AcceptableValueRange<float>(0f, 100f)));
             KeepSkills = Config.Bind("Cheats", "Keep skills on death", false, "Dying doesn't lower your skills. Only while cheats are on.");
@@ -60,6 +72,7 @@ namespace OdinsEye
             _menuObject.AddComponent<Menu>();
             _menuObject.AddComponent<MapPickHint>();
             _menuObject.AddComponent<Fun>();
+            _menuObject.AddComponent<Hotkeys>();
 
             _harmony = new Harmony(Guid);
             _harmony.PatchAll(typeof(Plugin).Assembly);
@@ -100,7 +113,7 @@ namespace OdinsEye
         }
 
         // Chat and the console have focus; the window itself reports as a text box, so it doesn't count here.
-        static bool IsTyping() =>
+        internal static bool IsTyping() =>
             (Chat.instance != null && Chat.instance.HasFocus()) || global::Console.IsVisible() || Menu.SearchFocused;
     }
 }

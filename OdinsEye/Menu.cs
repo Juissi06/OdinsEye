@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using UnityEngine;
 
 namespace OdinsEye
 {
-    internal enum Tab { Player, Skills, Buffs, Spawn, World, Teleport, Admin, Inspect }
+    internal enum Tab { Player, Skills, Buffs, Spawn, World, Teleport, Admin, Inspect, Custom }
 
     // The Odin's Eye window: a wood panel with tabs, a line saying what the game currently allows, the tab's
     // content, and the last command with what the game answered.
@@ -11,7 +13,7 @@ namespace OdinsEye
     {
         const float W = 840f, H = 560f, Pad = 18f, TitleH = 34f, TabsH = 32f, BannerH = 34f, FooterH = 26f;
 
-        static readonly Tab[] Tabs = { Tab.Player, Tab.Skills, Tab.Buffs, Tab.Spawn, Tab.World, Tab.Teleport, Tab.Admin, Tab.Inspect };
+        static readonly Tab[] Tabs = { Tab.Player, Tab.Skills, Tab.Buffs, Tab.Spawn, Tab.World, Tab.Teleport, Tab.Admin, Tab.Inspect, Tab.Custom };
 
         internal static bool IsOpen { get; private set; }
         internal static bool SearchFocused; // set by tabs with a search box, so the menu key can be typed there
@@ -43,6 +45,11 @@ namespace OdinsEye
         // Asks before running a destructive command (kill all, drop items and so on).
         internal static void Ask(string question, string line)
         {
+            if (!Plugin.AskFirst.Value)
+            {
+                Commands.Run(line);
+                return;
+            }
             _askText = question;
             _askLine = line;
         }
@@ -145,12 +152,31 @@ namespace OdinsEye
             if (GUI.Button(new Rect(r.xMax - 196f, r.yMax - 40f, 180f, 28f), "Cancel")) _askText = _askLine = null;
         }
 
+        static readonly List<Tab> Visible = new List<Tab>();
+        static string _hiddenFor;
+
+        // The tabs left after "Hidden tabs" in the config; all of them if that would hide everything.
+        static List<Tab> VisibleTabs()
+        {
+            string hidden = Plugin.HiddenTabs.Value ?? "";
+            if (hidden == _hiddenFor && Visible.Count > 0) return Visible;
+            _hiddenFor = hidden;
+            var names = new HashSet<string>(hidden.Split(',').Select(s => s.Trim().ToLowerInvariant()));
+            Visible.Clear();
+            foreach (var tab in Tabs)
+                if (!names.Contains(tab.ToString().ToLowerInvariant())) Visible.Add(tab);
+            if (Visible.Count == 0) Visible.AddRange(Tabs);
+            return Visible;
+        }
+
         static void DrawTabs(Rect r)
         {
-            float w = (r.width - (Tabs.Length - 1) * 6f) / Tabs.Length;
-            for (int i = 0; i < Tabs.Length; i++)
+            var tabs = VisibleTabs();
+            if (!tabs.Contains(_tab)) _tab = tabs[0];
+            float w = (r.width - (tabs.Count - 1) * 6f) / tabs.Count;
+            for (int i = 0; i < tabs.Count; i++)
             {
-                var tab = Tabs[i];
+                var tab = tabs[i];
                 string label = tab == _tab ? $"<color={Ui.Gold}><b>{tab}</b></color>" : tab.ToString();
                 if (GUI.Button(new Rect(r.x + i * (w + 6f), r.y, w, r.height), label) && tab != _tab)
                 {
@@ -204,6 +230,7 @@ namespace OdinsEye
                 case Tab.Teleport: TeleportTab.Draw(r); break;
                 case Tab.Admin: AdminTab.Draw(r); break;
                 case Tab.Inspect: InspectTab.Draw(r); break;
+                case Tab.Custom: CustomTab.Draw(r); break;
             }
         }
 
@@ -255,5 +282,19 @@ namespace OdinsEye
     static class InventoryShowPatch
     {
         static bool Prefix() => !Menu.IsOpen;
+    }
+
+    // The mouse wheel scrolls the window's lists; don't let it zoom the camera behind the window too.
+    [HarmonyPatch(typeof(GameCamera), "UpdateCamera")]
+    static class HoldZoomPatch
+    {
+        static readonly AccessTools.FieldRef<GameCamera, float> Distance = AccessTools.FieldRefAccess<GameCamera, float>("m_distance");
+
+        static void Prefix(GameCamera __instance, out float __state) => __state = Distance(__instance);
+
+        static void Postfix(GameCamera __instance, float __state)
+        {
+            if (Menu.IsOpen) Distance(__instance) = __state;
+        }
     }
 }

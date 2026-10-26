@@ -96,9 +96,9 @@ namespace OdinsEye
             y += 34f;
 
             string note = Cheats.Allowed
-                ? "Odin's Eye's own cheats: they stop when dev commands are turned off. Other players see your normal size."
+                ? "Odin's Eye's own cheats: they stop when dev commands are off. Others see your normal size."
                 : "Odin's Eye's own cheats: they work once cheats are on.";
-            GUI.Label(new Rect(x, y, w, 40f), $"<color={Ui.Muted}>{note}</color>", Widgets.Wrap);
+            GUI.Label(new Rect(x, y, w, r.yMax - y), $"<color={Ui.Muted}>{note}</color>", Widgets.Wrap);
         }
 
         // Label with the value, a slider snapped to steps (so the config isn't rewritten every pixel), and a reset.

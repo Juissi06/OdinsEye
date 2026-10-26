@@ -125,8 +125,8 @@ namespace OdinsEye
                 string tip = Ui.StripColor(Localization.instance.Localize(se.m_tooltip)).Replace("\n", " ");
                 if (!string.IsNullOrEmpty(tip))
                 {
-                    GUI.Label(new Rect(x, y, w, 34f), $"<color={Ui.Muted}>{tip}</color>", Widgets.Wrap);
-                    y += 36f;
+                    GUI.Label(new Rect(x, y, w, 52f), $"<color={Ui.Muted}>{tip}</color>", Widgets.Wrap);
+                    y += 54f;
                 }
                 Widgets.Command(new Rect(x, y, w * 0.5f - 3f, Widgets.RowH - 4f), "Add to me", "addstatus " + se.name);
             }

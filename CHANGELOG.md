@@ -1,6 +1,12 @@
 # Changelog
 
 ## Unreleased
+- The mouse wheel no longer zooms the camera while the window is open.
+- Switches that are on now show green, box and label, and no longer leave a grey bar after you click them. Longer notes no longer get cut off.
+- Custom tab: make your own buttons from any console line, or several separated by ";".
+- Back: teleport back to where you were before your last teleport (also after portals and dungeon doors).
+- Hotkeys for god mode, ghost mode, fly, no build cost and Back, without opening the window (unbound until you set them in the config).
+- Config: hide tabs you don't use, and turn off the "are you sure" questions.
 - Fun cheats on the Player tab: size (x0.25 to x4), jump (up to x10), speed (up to x5), infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback, instant crafting. Only while the game allows cheats.
 - Skills tab: every skill with its level; set a skill to any level, step it up or down, max or reset it, or all skills at once.
 - Learn faster (x2 to x25) and keep skills when you die: Odin's Eye's own cheats, only while the game allows cheats.
