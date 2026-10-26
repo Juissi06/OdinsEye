@@ -13,6 +13,13 @@
     background: url("screenshot-spawn.png") center / cover no-repeat;
     filter: saturate(1.05) contrast(1.05);
   }
+  /* Covers the screenshot's old footer line with the empty wood just to its right, same row. */
+  .patch {
+    position: absolute; left: 752px; top: 878px; width: 400px; height: 38px;
+    background: url("screenshot-spawn.png") no-repeat; background-size: 2554px 1350px;
+    background-position: -1125px -956px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+  }
   /* Dark wood-brown fade on the left for the title, and a vignette all round. */
   .fade {
     position: absolute; inset: 0;
@@ -44,6 +51,7 @@
 <body>
 <div class="stage">
   <div class="shot"></div>
+  <div class="patch"></div>
   <div class="fade"></div>
   <div class="frame"></div>
   <div class="title-block">
