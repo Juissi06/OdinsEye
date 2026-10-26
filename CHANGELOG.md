@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- The footer no longer keeps showing an old hint after you click a button, and clicked buttons don't stay highlighted.
+- Inspect names the ground "Terrain" with its biome instead of "_Zone".
 - Search box in the title bar: type any feature ("fly", "weather", "tame") and jump to its tab.
 - "Back to normal" on the Player tab turns every Odin's Eye cheat off at once.
 - Notes wrap onto more lines instead of getting cut off; tabs size to their names.

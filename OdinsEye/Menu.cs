@@ -93,6 +93,10 @@ namespace OdinsEye
                 GUI.enabled = true;
                 if (overResults) e.type = type;
                 if (Search.Focused) SearchFocused = true;
+                // Every text box is named; anything else that took keyboard focus (a clicked button or slider) gives
+                // it back, or its tooltip would stay stuck in the footer and the button would stay highlighted.
+                if (GUIUtility.keyboardControl != 0 && string.IsNullOrEmpty(GUI.GetNameOfFocusedControl()))
+                    GUIUtility.keyboardControl = 0;
                 if (searching) Search.DrawResults(searchBox);
                 if (asking) DrawAsk(window);
             }

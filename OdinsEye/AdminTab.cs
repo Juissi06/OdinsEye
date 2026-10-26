@@ -39,6 +39,7 @@ namespace OdinsEye
             Widgets.Command(new Rect(x, y, half, Widgets.RowH - 4f), "Save world now", "save", adminOnly: true);
             Widgets.Command(new Rect(x + half + 6f, y, half, Widgets.RowH - 4f), "List banned", "banned", adminOnly: true);
             y += Widgets.RowH;
+            GUI.SetNextControlName("OdinsEye_Unban");
             _unban = GUI.TextField(new Rect(x, y, w - 110f, Widgets.RowH - 4f), _unban ?? "", 64);
             bool was = GUI.enabled;
             GUI.enabled = was && !string.IsNullOrWhiteSpace(_unban);
@@ -104,6 +105,7 @@ namespace OdinsEye
             _deleteRadius = GUI.HorizontalSlider(new Rect(x + 90f, y + 6f, w - 90f, 16f), _deleteRadius, 1f, 50f);
             Ui.Label(new Rect(x, y, 90f, 22f), $"Radius {Mathf.RoundToInt(_deleteRadius)} m", Ui.Small);
             y += 26f;
+            GUI.SetNextControlName("OdinsEye_DeleteName");
             _deleteName = GUI.TextField(new Rect(x, y, w - 130f, Widgets.RowH - 4f), _deleteName ?? "", 40);
             string filter = (_deleteName ?? "").Trim();
             if (filter.Length == 0) Ui.Label(new Rect(x + 8f, y, w - 140f, Widgets.RowH - 4f), $"<color={Ui.Muted}>only names containing... (optional)</color>", Ui.Small);

@@ -16,7 +16,7 @@ namespace OdinsEye
         static readonly Dictionary<Skills.SkillType, Skills.Skill> Levels = new Dictionary<Skills.SkillType, Skills.Skill>();
         static Skills _builtFor;
         static Skills.SkillType _selected = Skills.SkillType.None;
-        static int _target;
+        static int _target, _targetFor = -1;
         static Vector2 _scroll;
 
         static readonly Func<Skills, Skills.SkillType, Skills.Skill> GetSkill =
@@ -66,6 +66,7 @@ namespace OdinsEye
         {
             _selected = type;
             _target = Mathf.FloorToInt(BaseLevel(type));
+            _targetFor = _target;
         }
 
         // ---------- Left: the list ----------
@@ -128,6 +129,12 @@ namespace OdinsEye
                 $"<color={Ui.Muted}>Level {level}" + (level < 100 ? $", {progress * 100f:0}% to {level + 1}" : "") + "</color>", Ui.Small);
             y += 48f;
 
+            // The slider follows the level when it changes (a button, "All to 100", learning), until you drag it.
+            if (level != _targetFor)
+            {
+                _targetFor = level;
+                _target = level;
+            }
             _target = Mathf.RoundToInt(GUI.HorizontalSlider(new Rect(x, y + 8f, w - 110f, 16f), _target, 0f, 100f));
             int target = _target;
             Act(new Rect(x + w - 100f, y, 100f, Widgets.RowH - 4f), $"Set to {target}", $"raiseskill {id} {target - level}", () => SetLevel(skills, type, target));

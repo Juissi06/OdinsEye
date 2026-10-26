@@ -72,6 +72,7 @@ namespace OdinsEye
 
             y += 6f;
             Widgets.Header(x, ref y, w, "Saved spots");
+            GUI.SetNextControlName("OdinsEye_SpotName");
             _spotName = GUI.TextField(new Rect(x, y, w - 130f, Widgets.RowH - 4f), _spotName ?? "", 30);
             if (GUI.Button(new Rect(x + w - 124f, y, 124f, Widgets.RowH - 4f), "Save this spot") && player != null)
                 Spots.Add(string.IsNullOrWhiteSpace(_spotName) ? $"Spot {Spots.Current.Count + 1}" : _spotName.Trim(), player.transform.position);

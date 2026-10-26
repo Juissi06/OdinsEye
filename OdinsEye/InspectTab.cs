@@ -70,13 +70,15 @@ namespace OdinsEye
                 if (hit.distance >= best || hit.collider.transform.IsChildOf(player.transform)) continue;
                 best = hit.distance;
                 point = hit.point;
+                // The ground belongs to a zone's Heightmap, whose root is just "_Zone": name it as terrain instead.
                 var nview = hit.collider.GetComponentInParent<ZNetView>();
-                target = nview != null ? nview.gameObject : hit.collider.transform.root.gameObject;
+                var ground = nview == null ? hit.collider.GetComponentInParent<Heightmap>() : null;
+                target = nview != null ? nview.gameObject : ground != null ? ground.gameObject : hit.collider.transform.root.gameObject;
             }
             if (target == null) return;
 
             _prefab = Utils.GetPrefabName(target);
-            _title = NameOf(target) ?? _prefab;
+            _title = target.GetComponent<Heightmap>() != null ? $"Terrain ({Heightmap.FindBiome(point)})" : NameOf(target) ?? _prefab;
             Add("Prefab", _prefab);
             Add("Kind", KindOf(target));
             Vector3 pos = target.transform.position;
