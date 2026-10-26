@@ -97,6 +97,10 @@ namespace OdinsEye
             }
             if (ship == null) return;
             float m = ShipSpeed;
+            // Only the ship's owner moves it, and that's whoever came aboard first, not the one steering. With
+            // the speed changed, the one steering takes the ship over so it applies.
+            var nview = ship.GetComponent<ZNetView>();
+            if (!Mathf.Approximately(m, 1f) && nview != null && nview.IsValid() && !nview.IsOwner()) nview.ClaimOwnership();
             ship.m_sailForceFactor = _sailForce * m;
             ship.m_backwardForce = _rowForce * m;
         }

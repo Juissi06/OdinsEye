@@ -224,11 +224,7 @@ namespace OdinsEye
             GUI.EndScrollView();
             y += ListH + 6f;
 
-            GUI.SetNextControlName(KeyControl);
-            _keyText = GUI.TextField(new Rect(x, y, w - 80f, 24f), _keyText ?? "", 60);
-            Menu.SearchFocused = GUI.GetNameOfFocusedControl() == KeyControl;
-            if (string.IsNullOrEmpty(_keyText) && !Menu.SearchFocused)
-                Ui.Label(new Rect(x + 8f, y, w - 80f, 24f), $"<color={Ui.Muted}>Key and value, e.g. EnemyDamage 200</color>", Ui.Small);
+            _keyText = Widgets.SearchField(new Rect(x, y, w - 80f, 24f), _keyText, KeyControl, "Key and value, e.g. EnemyDamage 200");
             bool was = GUI.enabled;
             GUI.enabled = was && _keyText.Trim().Length > 0;
             if (Widgets.Command(new Rect(x + w - 74f, y, 74f, 24f), "Set", "setkey " + _keyText.Trim())) _keyText = "";

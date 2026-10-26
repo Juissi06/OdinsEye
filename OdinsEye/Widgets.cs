@@ -7,6 +7,29 @@ namespace OdinsEye
     // command right now (Commands.CanRun), so the window never offers something that silently fails.
     internal static class Widgets
     {
+        // A search box with a grey placeholder; while it has focus the menu key can be typed into it.
+        internal static string SearchField(Rect r, string text, string control, string placeholder)
+        {
+            GUI.SetNextControlName(control);
+            text = GUI.TextField(r, text ?? "", 40);
+            Menu.SearchFocused = GUI.GetNameOfFocusedControl() == control;
+            if (string.IsNullOrEmpty(text) && !Menu.SearchFocused)
+                Ui.Label(new Rect(r.x + 8f, r.y, r.width, r.height), $"<color={Ui.Muted}>{placeholder}</color>", Ui.Small);
+            return text;
+        }
+
+        // Everyone in the world but you.
+        internal static List<ZNet.PlayerInfo> OtherPlayers()
+        {
+            var list = new List<ZNet.PlayerInfo>();
+            var players = ZNet.instance != null ? ZNet.instance.GetPlayerList() : null;
+            string me = Player.m_localPlayer != null ? Player.m_localPlayer.GetPlayerName() : null;
+            if (players != null)
+                foreach (var info in players)
+                    if (info.m_name != me) list.Add(info);
+            return list;
+        }
+
         // Names matching what's typed, for suggestions: those starting with it first, then those containing it,
         // each shortest first. The exact name itself is only kept when asked (so Tab can just add the space).
         internal static List<string> Matches(IEnumerable<string> names, string typed, int max, bool keepExact)

@@ -5,7 +5,8 @@ using UnityEngine;
 namespace OdinsEye
 {
     // "Back": where you were before each teleport, newest last. Every teleport goes through Player.TeleportTo
-    // (goto, findtp, portals, dungeon doors), so they're all remembered. Going back uses the game's "goto".
+    // (goto, findtp, portals, dungeon doors), so they're all remembered. Going back is allowed when the game's
+    // "goto" is, and uses TeleportTo itself so it keeps the height: back into a dungeon, not onto the ground above.
     internal static class Back
     {
         const int Max = 10;
@@ -39,19 +40,22 @@ namespace OdinsEye
 
         internal static void Go()
         {
-            if (!Any) return;
-            string line = Line;
+            if (!Any || !Commands.CanRun("goto")) return;
+            var player = Player.m_localPlayer;
+            bool went;
             _goingBack = true;
             try
             {
-                Commands.Run(line);
+                went = player.TeleportTo(Last, player.transform.rotation, true);
             }
             finally
             {
                 _goingBack = false;
             }
-            // Only forget the spot once the game actually took us there.
-            if (Commands.LastOutput == "done") History.RemoveAt(History.Count - 1);
+            Commands.LastCommand = "Back";
+            // The game refuses while a teleport is running or just after one; then the spot is kept for another try.
+            Commands.LastOutput = went ? "done" : "can't teleport again just yet";
+            if (went) History.RemoveAt(History.Count - 1);
         }
     }
 

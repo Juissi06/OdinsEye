@@ -38,7 +38,7 @@ namespace OdinsEye
         internal static bool CanRun(string name)
         {
             var console = global::Console.instance;
-            if (console == null || !All().TryGetValue(name, out var command)) return false;
+            if (console == null || name == null || !All().TryGetValue(name.ToLowerInvariant(), out var command)) return false;
             if (command.IsCheat && !Achievements.IsCheatedAtAll()) return false;
             if (command.IsValid(console)) return true;
             return command.RemoteCommand && ZNet.instance != null && !ZNet.instance.IsServer() && IsAdmin;

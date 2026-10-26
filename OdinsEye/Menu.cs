@@ -281,12 +281,6 @@ namespace OdinsEye
             }
         }
 
-        static void Planned(Rect r, string what)
-        {
-            Ui.Label(new Rect(r.x, r.y, r.width, 26f), $"<color={Ui.Gold}>Coming next</color>", Ui.Text);
-            GUI.Label(new Rect(r.x, r.y + 30f, r.width, r.height - 30f), what, Widgets.Wrap);
-        }
-
         static void DrawFooter(Rect r)
         {
             // Hovering a command button shows what it will run, so the console is learnt along the way.
@@ -331,17 +325,14 @@ namespace OdinsEye
         static bool Prefix() => !Menu.IsOpen;
     }
 
-    // The mouse wheel scrolls the window's lists; don't let it zoom the camera behind the window too.
-    [HarmonyPatch(typeof(GameCamera), "UpdateCamera")]
+    // The mouse wheel scrolls the window's lists (they read Unity's own scroll events); the game gets none of it
+    // while the window is open, so the camera behind it doesn't zoom.
+    [HarmonyPatch(typeof(ZInput), nameof(ZInput.GetMouseScrollWheel))]
     static class HoldZoomPatch
     {
-        static readonly AccessTools.FieldRef<GameCamera, float> Distance = AccessTools.FieldRefAccess<GameCamera, float>("m_distance");
-
-        static void Prefix(GameCamera __instance, out float __state) => __state = Distance(__instance);
-
-        static void Postfix(GameCamera __instance, float __state)
+        static void Postfix(ref float __result)
         {
-            if (Menu.IsOpen) Distance(__instance) = __state;
+            if (Menu.IsOpen) __result = 0f;
         }
     }
 }

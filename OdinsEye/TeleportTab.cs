@@ -29,7 +29,9 @@ namespace OdinsEye
         static Vector2 _scroll, _locScroll, _spotScroll;
         static float _contentH = 600f;
         static string _search = "", _spotName = "";
-        static List<string> _locations;
+        static List<string> _locations, _shown;
+        static string _shownFor;
+        static readonly List<string[]> _shortcuts = new List<string[]>(); // the ones this world has
         static ZoneSystem _locationsFor;
 
         internal static void Draw(Rect r)
@@ -111,24 +113,44 @@ namespace OdinsEye
 
         static float PlayerList(float x, float y, float w)
         {
-            var net = ZNet.instance;
-            var players = net != null ? net.GetPlayerList() : null;
-            string me = Player.m_localPlayer != null ? Player.m_localPlayer.GetPlayerName() : null;
+            var others = Widgets.OtherPlayers();
             int shown = 0;
-            if (players != null)
-                foreach (var info in players)
+            foreach (var info in others)
                 {
-                    if (info.m_name == me) continue;
                     shown++;
                     Ui.Label(new Rect(x, y, w - 170f, RowH - 2f), info.m_name, Ui.Small);
                     if (TryGetPosition(info, out Vector3 pos))
                         Widgets.Command(new Rect(x + w - 164f, y, 80f, RowH - 3f), "Go to", $"goto {pos.x:0} {pos.z:0}");
-                    // recall matches by name; the first word is enough to find them.
-                    Widgets.Command(new Rect(x + w - 80f, y, 80f, RowH - 3f), "Bring", "recall " + info.m_name.Split(' ')[0]);
+                    var bring = new Rect(x + w - 80f, y, 80f, RowH - 3f);
+                    string word = RecallWord(info.m_name, others);
+                    if (word != null) Widgets.Command(bring, "Bring", "recall " + word);
+                    else
+                    {
+                        bool was = GUI.enabled;
+                        GUI.enabled = false;
+                        GUI.Button(bring, new GUIContent("Bring", "~The game's recall can't pick out this player: another name contains theirs"));
+                        GUI.enabled = was;
+                    }
                     y += RowH;
                 }
             if (shown == 0) Widgets.Note(x, ref y, w, "No other players here.");
             return y;
+        }
+
+        // recall brings every player whose name contains the one word it's given. A word from this name that's
+        // in no other name brings just them; when there's none, there's no safe way to bring only this player.
+        static string RecallWord(string name, List<ZNet.PlayerInfo> others)
+        {
+            foreach (string word in name.Split(' '))
+            {
+                if (word.Length == 0) continue;
+                string w = word.ToLowerInvariant();
+                bool unique = true;
+                foreach (var other in others)
+                    if (other.m_name != name && other.m_name.ToLowerInvariant().Contains(w)) unique = false;
+                if (unique) return word;
+            }
+            return null;
         }
 
         // Public map positions come with the player list; otherwise the player's own object, if it's loaded.
@@ -153,9 +175,8 @@ namespace OdinsEye
             Widgets.Note(x, ref y, w, "Teleports to the nearest one the world has");
             float bw = (w - 6f * 2f) / 3f;
             int col = 0;
-            foreach (var s in Shortcuts)
+            foreach (var s in _shortcuts)
             {
-                if (!_locations.Any(l => l.IndexOf(s[1], System.StringComparison.OrdinalIgnoreCase) >= 0)) continue;
                 Widgets.Command(new Rect(x + col * (bw + 6f), y, bw, Widgets.RowH - 4f), s[0], "findtp " + s[1]);
                 if (++col == 3)
                 {
@@ -167,14 +188,16 @@ namespace OdinsEye
 
             y += 6f;
             Widgets.Header(x, ref y, w, "All locations");
-            GUI.SetNextControlName(SearchControl);
-            _search = GUI.TextField(new Rect(x, y, w, Widgets.RowH - 4f), _search ?? "", 40);
-            Menu.SearchFocused = GUI.GetNameOfFocusedControl() == SearchControl;
-            if (string.IsNullOrEmpty(_search) && !Menu.SearchFocused)
-                Ui.Label(new Rect(x + 8f, y, w, Widgets.RowH - 4f), $"<color={Ui.Muted}>Search locations...</color>", Ui.Small);
+            _search = Widgets.SearchField(new Rect(x, y, w, Widgets.RowH - 4f), _search, SearchControl, "Search locations...");
             y += Widgets.RowH;
+            // Filtered again only when the search changes, not on every GUI event.
             string q = (_search ?? "").Trim();
-            var shown = q.Length == 0 ? _locations : _locations.Where(l => l.IndexOf(q, System.StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            if (q != _shownFor || _shown == null)
+            {
+                _shownFor = q;
+                _shown = q.Length == 0 ? _locations : _locations.Where(l => l.IndexOf(q, System.StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
+            var shown = _shown;
             var area = new Rect(x, y, w, ListH);
             Ui.Inset(area);
             var view = new Rect(0f, 0f, w - 24f, shown.Count * RowH);
@@ -209,10 +232,14 @@ namespace OdinsEye
             var zones = ZoneSystem.instance;
             if (zones == _locationsFor && _locations != null) return;
             _locationsFor = zones;
+            _shown = null;
             _locations = zones == null
                 ? new List<string>()
                 : zones.m_locations.Where(l => l != null && l.m_enable && !string.IsNullOrEmpty(l.m_prefabName))
                     .Select(l => l.m_prefabName).Distinct().OrderBy(n => n).ToList();
+            _shortcuts.Clear();
+            foreach (var s in Shortcuts)
+                if (_locations.Any(l => l.IndexOf(s[1], System.StringComparison.OrdinalIgnoreCase) >= 0)) _shortcuts.Add(s);
         }
 
         // ---------- Map pick ----------

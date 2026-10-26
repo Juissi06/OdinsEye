@@ -8,6 +8,14 @@
 - Custom tab: suggestions say when a command needs dev commands or can't run here; names containing what you typed show after the ones starting with it.
 - Custom tab: no slowdown after "spawn " while thousands of names match, no errors from a command with an empty option, and the cursor no longer jumps to the end later on.
 - World keys: suggestions sorted the same way as the console line's.
+- Delete around you: the question now names exactly what will be deleted. The game's forcedelete takes one word and removes every object whose name contains it, so "wood wall" is sent as "wood_wall" instead of just "wood".
+- Bring only brings that player: it's greyed out when the game's recall can't pick them out because another player's name contains theirs.
+- Back keeps the height, so it returns you inside a dungeon, and only forgets the spot once the teleport really happened (pressing it twice quickly or right after a portal no longer loses it).
+- Custom buttons with capitals ("Spawn Wood") can be clicked.
+- Scrolling a list in the window no longer zooms the camera behind it.
+- Ship speed works when someone else came aboard first: the one steering takes the ship over.
+- Tame works on creatures another player nearby was controlling.
+- Teleport tab: the location list is only filtered again when the search changes.
 
 ## 0.2.0
 New tabs

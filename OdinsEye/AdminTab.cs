@@ -50,13 +50,9 @@ namespace OdinsEye
 
             y += 6f;
             Widgets.Header(x, ref y, w, "Players");
-            var players = net != null ? net.GetPlayerList() : null;
-            string me = Player.m_localPlayer != null ? Player.m_localPlayer.GetPlayerName() : null;
             int shown = 0;
-            if (players != null)
-                foreach (var info in players)
+            foreach (var info in Widgets.OtherPlayers())
                 {
-                    if (info.m_name == me) continue;
                     shown++;
                     // Kick and ban by the player's platform ID: names can have spaces, the command reads one word.
                     string id = info.m_userInfo.m_id.ToString();
@@ -110,9 +106,12 @@ namespace OdinsEye
             string filter = (_deleteName ?? "").Trim();
             if (filter.Length == 0) Ui.Label(new Rect(x + 8f, y, w - 140f, Widgets.RowH - 4f), $"<color={Ui.Muted}>only names containing... (optional)</color>", Ui.Small);
             int radius = Mathf.RoundToInt(_deleteRadius);
-            string line = filter.Length > 0 ? $"forcedelete {radius} {filter.Split(' ')[0]}" : $"forcedelete {radius}";
+            // The game's forcedelete takes one word and deletes every object whose name contains it, so the
+            // question says exactly that word. Spaces become _, as in object names ("wood wall" -> "wood_wall").
+            string word = filter.Replace(' ', '_');
+            string line = word.Length > 0 ? $"forcedelete {radius} {word}" : $"forcedelete {radius}";
             Widgets.Command(new Rect(x + w - 124f, y, 124f, Widgets.RowH - 4f), "Delete", line,
-                filter.Length > 0 ? $"Delete everything named \"{filter}\" within {radius} m? There's no undo." : $"Delete EVERYTHING within {radius} m? There's no undo.");
+                word.Length > 0 ? $"Delete every object whose name contains \"{word}\" within {radius} m? There's no undo." : $"Delete EVERYTHING within {radius} m? There's no undo.");
             y += Widgets.RowH + 4f;
 
             Widgets.Header(x, ref y, w, "Fires and lights");

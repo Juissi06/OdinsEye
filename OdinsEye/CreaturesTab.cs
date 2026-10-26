@@ -104,6 +104,9 @@ namespace OdinsEye
         // mark it tamed, which makes it friendly.
         internal static void SetTamed(Character c, bool tamed)
         {
+            // Only the creature's owner can tame it; another player nearby may own it.
+            var nview = c.GetComponent<ZNetView>();
+            if (nview != null && nview.IsValid() && !nview.IsOwner()) nview.ClaimOwnership();
             var tameable = c.GetComponent<Tameable>();
             if (tamed && tameable != null && Tame != null) Tame(tameable);
             else c.SetTamed(tamed);

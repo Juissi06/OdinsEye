@@ -24,9 +24,7 @@ namespace OdinsEye
         static Font _body, _title;
         static Texture2D _panel, _panelShadow, _button, _buttonHover, _buttonActive, _field, _fieldFocus,
             _toggleOff, _toggleOn, _scrollTrack, _scrollThumb, _bar;
-        static GUIStyle _text, _textCenter, _small, _smallCenter, _smallRight, _titleStyle, _panelStyle, _caption, _keyText;
-        static Texture2D _keycap;
-        static GUIStyle _keycapStyle;
+        static GUIStyle _text, _textCenter, _small, _smallCenter, _smallRight, _titleStyle, _panelStyle;
 
         // Valheim's own UI art when available (see GameArt); null means use the generated look above.
         static GUIStyle _hudFill, _hudBorder, _wood, _barTrack;
@@ -43,7 +41,6 @@ namespace OdinsEye
         internal static GUIStyle SmallRight { get { Init(); return _smallRight; } }
         internal static GUIStyle Title { get { Init(); return _titleStyle; } }
         // Row labels in the info box: small gold text.
-        internal static GUIStyle Caption { get { Init(); return _caption; } }
         internal static GUISkin Skin { get { Init(); return _skin; } }
 
         // ---------- Drawing helpers (call from OnGUI) ----------
@@ -96,25 +93,6 @@ namespace OdinsEye
             _wood.Draw(r, false, false, false, false);
         }
 
-        // Divider: the game's gold separator, or a faint gold line.
-        internal static void Divider(float x, float y, float width)
-        {
-            Init();
-            if (Event.current.type != EventType.Repaint) return;
-            Color old = GUI.color;
-            if (_separator != null)
-            {
-                GUI.color = new Color(1f, 1f, 1f, 0.7f * old.a);
-                GUI.DrawTexture(new Rect(x, y - 1f, width, 3f), _separator, ScaleMode.StretchToFill);
-            }
-            else
-            {
-                GUI.color = new Color(GoldColor.r, GoldColor.g, GoldColor.b, 0.25f);
-                GUI.DrawTexture(new Rect(x, y, width, 1f), Texture2D.whiteTexture);
-            }
-            GUI.color = old;
-        }
-
         // Label with a soft drop shadow so it stays readable over snow, sky and fire.
         internal static void Label(Rect r, string text, GUIStyle style)
         {
@@ -152,19 +130,6 @@ namespace OdinsEye
             GUI.color = old;
         }
 
-        // Small coloured square for legends.
-        internal static void Swatch(Rect r, Color c)
-        {
-            if (Event.current.type != EventType.Repaint) return;
-            Color old = GUI.color;
-            GUI.color = new Color(0f, 0f, 0f, 0.6f);
-            GUI.DrawTexture(new Rect(r.x - 1f, r.y - 1f, r.width + 2f, r.height + 2f), Texture2D.whiteTexture);
-            c.a = Mathf.Max(c.a, 0.85f);
-            GUI.color = c;
-            GUI.DrawTexture(r, Texture2D.whiteTexture);
-            GUI.color = old;
-        }
-
         // Draws a game sprite (also from an atlas), keeping its aspect, with a soft shadow.
         internal static void Icon(Rect r, Sprite sprite)
         {
@@ -194,24 +159,6 @@ namespace OdinsEye
             GUI.color = old;
         }
 
-        // A key drawn as a small key cap, like the game's own key hints. Height comes from r; returns the width used.
-        internal static float Keycap(Rect r, string key)
-        {
-            Init();
-            float w = KeycapWidth(key);
-            r.width = w;
-            if (Event.current.type == EventType.Repaint)
-                _keycapStyle.Draw(r, false, false, false, false);
-            GUI.Label(r, key, _keyText);
-            return w;
-        }
-
-        internal static float KeycapWidth(string key)
-        {
-            Init();
-            return Mathf.Max(20f, LineWidth(key, _keyText) + 12f);
-        }
-
         // Unity key names to what's printed on the key: LeftAlt -> L Alt, Alpha1 -> 1, Mouse2 -> Middle mouse.
         internal static string KeyName(KeyCode key)
         {
@@ -239,17 +186,6 @@ namespace OdinsEye
             foreach (var m in shortcut.Modifiers) parts.Add(KeyName(m));
             parts.Add(KeyName(shortcut.MainKey));
             return string.Join(" + ", parts);
-        }
-
-        static readonly Dictionary<int, Sprite> StatusIcons = new Dictionary<int, Sprite>();
-
-        // Icon of a status effect (e.g. SEMan.s_statusEffectShelter), as shown in the game's status bar.
-        internal static Sprite StatusIcon(int hash)
-        {
-            if (StatusIcons.TryGetValue(hash, out var sprite) && sprite != null) return sprite;
-            sprite = ObjectDB.instance != null ? ObjectDB.instance.GetStatusEffect(hash)?.m_icon : null;
-            if (sprite != null) StatusIcons[hash] = sprite;
-            return sprite;
         }
 
         static readonly GUIContent Measure = new GUIContent();
@@ -304,7 +240,6 @@ namespace OdinsEye
             _scrollTrack = Rounded(new Color(0f, 0f, 0f, 0.35f), new Color(0f, 0f, 0f, 0f), new Color(0f, 0f, 0f, 0f));
             _scrollThumb = Rounded(new Color(0.62f, 0.50f, 0.30f, 0.8f), new Color(0.80f, 0.64f, 0.36f, 0.9f), new Color(1f, 1f, 1f, 0.1f));
             _bar = Rounded(Color.white, Color.white, Color.white);
-            _keycap = Rounded(new Color(0.16f, 0.13f, 0.10f, 0.95f), new Color(0.62f, 0.52f, 0.36f, 0.9f), new Color(1f, 1f, 1f, 0.07f));
 
             _panelStyle = new GUIStyle { normal = { background = _panel }, border = new RectOffset(6, 6, 6, 6) };
             LoadGameArt();
@@ -330,11 +265,6 @@ namespace OdinsEye
             _smallRight = new GUIStyle(_small) { alignment = TextAnchor.MiddleRight };
             _titleStyle = new GUIStyle(_text) { font = _title, fontSize = 19 };
             _titleStyle.normal.textColor = GoldColor;
-            _caption = new GUIStyle(_text) { fontSize = 13 };
-            _caption.normal.textColor = GoldColor;
-            _keyText = new GUIStyle(_text) { fontSize = 12, alignment = TextAnchor.MiddleCenter };
-            _keycapStyle = new GUIStyle { normal = { background = _keycap }, border = new RectOffset(6, 6, 6, 6) };
-            _keyText.normal.textColor = new Color(0.96f, 0.93f, 0.86f);
 
             BuildSkin();
         }

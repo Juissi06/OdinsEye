@@ -72,11 +72,7 @@ namespace OdinsEye
 
         static void DrawGrid(Rect r, Player player)
         {
-            GUI.SetNextControlName(SearchControl);
-            _search = GUI.TextField(new Rect(r.x, r.y, r.width, SearchH), _search ?? "", 40);
-            Menu.SearchFocused = GUI.GetNameOfFocusedControl() == SearchControl;
-            if (string.IsNullOrEmpty(_search) && !Menu.SearchFocused)
-                Ui.Label(new Rect(r.x + 8f, r.y, r.width, SearchH), $"<color={Ui.Muted}>Search status effects...</color>", Ui.Small);
+            _search = Widgets.SearchField(new Rect(r.x, r.y, r.width, SearchH), _search, SearchControl, "Search status effects...");
             Filter();
 
             var area = new Rect(r.x, r.y + SearchH + 6f, r.width, r.height - SearchH - 6f);
