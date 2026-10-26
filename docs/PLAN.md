@@ -21,8 +21,8 @@ One Valheim-style window (Home) for the game's debug and admin commands, instead
 
 ## Steps
 1. [x] **Skeleton:** repo, window with tabs, command runner, permission states, achievement warning, Player tab toggles as a first real use.
-2. **Player and World tabs:** skills, status effects, game speed; time, weather, wind, raids, cleanup.
-3. **Spawn browser:** the biggest piece. Icons, search, categories, favourites.
+2. [x] **World tab:** time (presets, slider, real time, skip), weather list, wind, game speed, raids, clean-up with confirmation, no monster spawns, boss progress. Player tab extras (skills, status effects) still to do.
+3. [x] **Spawn browser:** categories, search by name or prefab, icon grid (only visible rows drawn), amount, quality or stars, straight into inventory, creatures, premade item sets. Favourites still to do.
 4. **Teleport:** map click, saved spots, locations, players.
 5. **Admin tab:** area tools, player list with kick and ban, save.
 6. **Inspect:** the small crosshair readout.

@@ -8,7 +8,12 @@ Every button runs the game's own console command, so it follows the game's rules
 - Before the first cheat, the window warns that the character will count as cheated for achievements.
 
 ## Status
-Early: the window, the rules above and the Player tab (god, ghost, fly, no build cost, heal). Spawn, World, Teleport, Admin and Inspect tabs are next. See docs/PLAN.md.
+Early. Working tabs:
+- **Player:** god, ghost, fly, no build cost, heal.
+- **Spawn:** every item and creature with icons, categories and search. Pick an amount and quality (or stars for creatures) and spawn it in front of you or straight into your inventory. Premade item sets too.
+- **World:** time of day, skip time, weather, wind, game speed, raids, kill enemies and clean up drops (asks first), no monster spawns, boss progress.
+
+Teleport, Admin and Inspect are next. See docs/PLAN.md.
 
 ## Keys
 | Key | Action |

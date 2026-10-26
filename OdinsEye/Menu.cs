@@ -17,6 +17,7 @@ namespace OdinsEye
         internal static bool SearchFocused; // set by tabs with a search box, so the menu key can be typed there
 
         static Tab _tab;
+        static string _askText, _askLine; // a destructive command waiting for yes or no
 
         internal static void Toggle()
         {
@@ -34,6 +35,14 @@ namespace OdinsEye
         {
             IsOpen = false;
             SearchFocused = false;
+            _askText = _askLine = null;
+        }
+
+        // Asks before running a destructive command (kill all, drop items and so on).
+        internal static void Ask(string question, string line)
+        {
+            _askText = question;
+            _askLine = line;
         }
 
         void OnGUI()
@@ -47,10 +56,16 @@ namespace OdinsEye
                 if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape)
                 {
                     Event.current.Use();
-                    Close();
+                    if (_askText != null) _askText = _askLine = null; // Esc answers "no" first
+                    else Close();
                     return;
                 }
-                DrawWindow(new Rect((sw - W) * 0.5f, (sh - H) * 0.5f, W, H));
+                var window = new Rect((sw - W) * 0.5f, (sh - H) * 0.5f, W, H);
+                bool asking = _askText != null;
+                GUI.enabled = !asking;
+                DrawWindow(window);
+                GUI.enabled = true;
+                if (asking) DrawAsk(window);
             }
             finally
             {
@@ -81,6 +96,22 @@ namespace OdinsEye
             DrawFooter(new Rect(x, r.yMax - Pad - FooterH, inner, FooterH));
         }
 
+        static void DrawAsk(Rect window)
+        {
+            const float w = 420f, h = 130f;
+            var r = new Rect(window.center.x - w * 0.5f, window.center.y - h * 0.5f, w, h);
+            Ui.Panel(r);
+            GUI.Label(new Rect(r.x + 16f, r.y + 14f, w - 32f, 54f), _askText, Widgets.Wrap);
+            Ui.Label(new Rect(r.x + 16f, r.y + 62f, w - 32f, 20f), $"<color={Ui.Muted}>&gt; {_askLine}</color>", Ui.Small);
+            if (GUI.Button(new Rect(r.x + 16f, r.yMax - 40f, 180f, 28f), "Yes, do it"))
+            {
+                string line = _askLine;
+                _askText = _askLine = null;
+                Commands.Run(line);
+            }
+            if (GUI.Button(new Rect(r.xMax - 196f, r.yMax - 40f, 180f, 28f), "Cancel")) _askText = _askLine = null;
+        }
+
         static void DrawTabs(Rect r)
         {
             float w = (r.width - (Tabs.Length - 1) * 6f) / Tabs.Length;
@@ -91,6 +122,7 @@ namespace OdinsEye
                 if (GUI.Button(new Rect(r.x + i * (w + 6f), r.y, w, r.height), label) && tab != _tab)
                 {
                     _tab = tab;
+                    SearchFocused = false;
                     Plugin.LastTab.Value = tab;
                 }
             }
@@ -132,8 +164,8 @@ namespace OdinsEye
             switch (_tab)
             {
                 case Tab.Player: PlayerTab.Draw(r); break;
-                case Tab.Spawn: Planned(r, "Items and creatures with icons and search: amount, quality, star level, spawn where you look or into your inventory, starter item sets."); break;
-                case Tab.World: Planned(r, "Time of day, skip time, weather, wind, start and stop raids, kill enemies, remove drops, boss progress."); break;
+                case Tab.Spawn: SpawnTab.Draw(r); break;
+                case Tab.World: WorldTab.Draw(r); break;
                 case Tab.Teleport: Planned(r, "Click the map to go there, saved spots, find a location and jump to it, bring players to you."); break;
                 case Tab.Admin: Planned(r, "Repair everything nearby, delete what you look at, set fuel, stop fire and smoke, map and portal rules, player list with kick and ban, save the world."); break;
                 case Tab.Inspect: Planned(r, "What's under your crosshair: prefab name, owner, health, position and its saved data."); break;
@@ -143,8 +175,7 @@ namespace OdinsEye
         static void Planned(Rect r, string what)
         {
             Ui.Label(new Rect(r.x, r.y, r.width, 26f), $"<color={Ui.Gold}>Coming next</color>", Ui.Text);
-            var style = new GUIStyle(Ui.Text) { wordWrap = true, alignment = TextAnchor.UpperLeft };
-            GUI.Label(new Rect(r.x, r.y + 30f, r.width, r.height - 30f), what, style);
+            GUI.Label(new Rect(r.x, r.y + 30f, r.width, r.height - 30f), what, Widgets.Wrap);
         }
 
         static void DrawFooter(Rect r)
