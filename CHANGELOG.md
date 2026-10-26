@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.1.0
+- Player tab: switch for the game's "yesiuseddevcommandsbutiwantmyachievementsanyway", so cheated items and pieces count for achievements again.
 - Hover a button to see the console command it runs.
 - Drag the window by its title; it remembers where you put it.
 - Inspect tab: what's in the middle of your view, with its prefab, owner, health and more.

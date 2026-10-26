@@ -16,6 +16,7 @@ Manual: put the DLL file in \Steam\steamapps\common\Valheim\BepInEx\plugins
 Player
 God mode, ghost mode, fly and no build cost as simple switches
 Heal: back to full health and stamina
+Achievements: a switch for the game's own option that lets cheated items count for achievements again
 Spawn
 Every item and creature in the game with icons, categories and search
 Pick the amount and quality, or stars for creatures, and spawn it in front of you or straight into your inventory
@@ -68,6 +69,7 @@ Odin's Eye puts Valheim's debug and admin commands in one window, so you don't h
 [list]
 [*]God mode, ghost mode, fly and no build cost as simple switches
 [*][b]Heal:[/b] back to full health and stamina
+[*][b]Achievements:[/b] a switch for the game's own option that lets cheated items count for achievements again
 [/list]
 
 [size=5][b][color=#e8c77e]Spawn[/color][/b][/size]
