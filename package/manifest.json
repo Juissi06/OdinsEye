@@ -1,8 +1,8 @@
 {
   "name": "Odins_Eye",
   "version_number": "$version$",
-  "website_url": "",
-  "description": "One Valheim-style window for the game's debug and admin commands. Every button runs the game's own console command, so it follows the game's rules.",
+  "website_url": "https://www.nexusmods.com/valheim/mods/4611",
+  "description": "Complete toolpack for Valheim for easy debugging, testing or cheating, I don't judge! Utilizes vanilla Valheim console for an easy to read and use menu for doing whatever you feel like doing.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2351"
   ]
