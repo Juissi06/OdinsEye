@@ -3,6 +3,13 @@
 ## Summary (short text under the title)
 Valheim's debug and admin commands in one window: spawn items and creatures, time and weather, teleport, server admin and more. Follows the game's own cheat rules.
 
+## Changelog / file description (0.3.0)
+- Speed up everything around you: grow plants, finish smelters, kilns and fermenters, cook or burn food, fill beehives, regrow berries
+- Grow up young creatures and heal your tames
+- Set a creature's stars (0 to 4) from the Inspect tab
+- Tape measure, your coordinates and a count of what's loaded around you
+- Undo terrain changes in a radius, clear snow off your buildings
+
 ## Changelog / file description (0.2.0)
 New Skills, Buffs, Creatures and Custom tabs; fun cheats (size, jump, speed, ship speed, infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback, instant crafting); faster learning per skill; keep skills on death; search box; world modifiers and keys; unlock all recipes and pieces; console suggestions for your own buttons; spawn tamed; Back teleport; repair buildings; hotkeys; fixes.
 
