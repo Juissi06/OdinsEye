@@ -11,7 +11,7 @@ namespace OdinsEye
         const float Gap = 24f, RowH = 26f;
 
         static Vector2 _scroll;
-        static float _contentH = 600f, _deleteRadius = 5f, _fuel = 10f, _players;
+        static float _contentH = 600f, _deleteRadius = 5f, _fuel = 10f, _players, _terrainRadius = 10f;
         static string _deleteName = "", _unban = "";
 
         internal static void Draw(Rect r)
@@ -123,11 +123,20 @@ namespace OdinsEye
 
             Widgets.Header(x, ref y, w, "Repair");
             Widgets.Command(new Rect(x, y, half, Widgets.RowH - 4f), "Your gear", "repairall");
-            bool was = GUI.enabled;
-            GUI.enabled = was && Cheats.Allowed;
-            if (GUI.Button(new Rect(x + half + 6f, y, half, Widgets.RowH - 4f), new GUIContent($"Buildings within {RepairRange:0} m", Widgets.OwnCheat)))
+            if (Widgets.CheatButton(new Rect(x + half + 6f, y, half, Widgets.RowH - 4f), $"Buildings within {RepairRange:0} m"))
                 RepairBuildings();
-            GUI.enabled = was;
+            y += Widgets.RowH;
+            Widgets.Note(x, ref y, w, "Buildings include ships and carts.");
+            if (Widgets.CheatButton(new Rect(x, y, half, Widgets.RowH - 4f), $"Clear snow within {Nearby.Range:0} m"))
+                Nearby.ClearSnow();
+            y += Widgets.RowH + 4f;
+
+            Widgets.Header(x, ref y, w, "Undo terrain changes");
+            Widgets.Note(x, ref y, w, "Digging, raising, paths and cultivation go back to how the world made them. No undo.");
+            _terrainRadius = GUI.HorizontalSlider(new Rect(x + 90f, y + 6f, w - 220f, 16f), _terrainRadius, 2f, 40f);
+            Ui.Label(new Rect(x, y, 90f, 22f), $"Radius {Mathf.RoundToInt(_terrainRadius)} m", Ui.Small);
+            if (Widgets.CheatButton(new Rect(x + w - 124f, y, 124f, Widgets.RowH - 4f), "Restore ground"))
+                Nearby.UndoTerrain(Mathf.Round(_terrainRadius));
             y += Widgets.RowH;
             return y;
         }

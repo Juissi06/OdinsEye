@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased
+- World: "Speed up within 30 m" also finishes production (smelters, kilns, furnaces, spinning wheels, windmills, refineries hand out everything queued; fermenters are ready to tap), cooks or burns the food on cooking stations and ovens, fills beehives and sap collectors, and regrows picked berries, mushrooms, thistle and flax.
+- Creatures: grow up young wolves, boars, lox and askvins, and heal every tame nearby.
+- Inspect: set the stars (0 to 4) of the creature you look at; your coordinates, a tape measure between two marked spots, and a count of pieces, items, creatures and objects around you.
+- Admin: undo terrain changes in a radius (digging, raising, paths, cultivation), clear snow off pieces. Repairing buildings also covers ships and carts.
 - World: "Grow plants" makes every crop, sapling and seedling within 30 m finish growing at once. Plants that can't grow where they are (no space, no sky, wrong biome) are left alone and counted, since growing them would make the game remove them.
 
 ## 0.2.1

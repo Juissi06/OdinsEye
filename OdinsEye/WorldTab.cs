@@ -113,13 +113,14 @@ namespace OdinsEye
             Widgets.CommandRow(x, ref y, w, new[] { "Remove drops", "Remove fish", "Remove birds" },
                 new[] { "removedrops", "removefish", "removebirds" });
             Widgets.Switch(new Rect(x, y + 4f, w, 24f), "No monster spawns", SpawnSystem.m_nospawn, "nospawn on", "nospawn off");
-            y += Widgets.RowH + 2f;
-            bool was = GUI.enabled;
-            GUI.enabled = was && Cheats.Allowed;
-            if (GUI.Button(new Rect(x, y, w, Widgets.RowH - 4f), new GUIContent($"Grow plants within {GrowRange:0} m", Widgets.OwnCheat)))
-                GrowPlants();
-            GUI.enabled = was;
             y += Widgets.RowH + 6f;
+
+            Widgets.Header(x, ref y, w, $"Speed up within {Nearby.Range:0} m");
+            Widgets.CheatPair(x, ref y, w, "Grow plants", GrowPlants, "Finish production", Nearby.FinishProduction);
+            Widgets.CheatPair(x, ref y, w, "Cook food", () => Nearby.Cook(false), "Burn food", () => Nearby.Cook(true));
+            Widgets.CheatPair(x, ref y, w, "Fill beehives and sap", Nearby.FillHives, "Regrow berries", Nearby.RegrowPickables);
+            Widgets.Note(x, ref y, w, "Production: smelters, kilns, spinning wheels, windmills, refineries and fermenters.");
+            y += 6f;
 
             Widgets.Header(x, ref y, w, "Boss progress");
             Widgets.Note(x, ref y, w, "World keys: unlock raids and the trader's items");
@@ -280,7 +281,7 @@ namespace OdinsEye
 
         static string F(float v) => v.ToString("0.###", CultureInfo.InvariantCulture);
 
-        const float GrowRange = 30f;
+        const float GrowRange = Nearby.Range;
 
         // The game has no command for this: crops, saplings and other seedlings around you finish growing now,
         // through the game's own Plant.Grow. Only healthy ones: Grow deletes a plant that can't grow.

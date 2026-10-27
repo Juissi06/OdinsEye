@@ -16,6 +16,10 @@ namespace OdinsEye
 
         static readonly List<Line> Lines = new List<Line>();
         static string _title, _prefab;
+        static Character _creature;
+        static Vector3? _markA, _markB;
+        static Nearby.Counts _counts;
+        static float _countedAt = -10f;
         static float _refreshedAt = -10f;
 
         internal static void Draw(Rect r)
@@ -31,6 +35,7 @@ namespace OdinsEye
             {
                 Widgets.Header(x, ref y, w, "Nothing in view");
                 Widgets.Note(x, ref y, w, $"Close the window, look at something within {LookRange:0} m, and open it again.");
+                DrawAround(x, y + 10f, w);
                 return;
             }
 
@@ -51,12 +56,63 @@ namespace OdinsEye
                 Commands.LastOutput = _prefab + " copied";
             }
             Widgets.Command(new Rect(x + bw + 8f, y, bw, Widgets.RowH - 4f), "Spawn another", "spawn " + _prefab);
+            y += Widgets.RowH;
+
+            if (_creature != null)
+            {
+                Ui.Label(new Rect(x, y, KeyW, LineH), $"<color={Ui.Muted}>Stars</color>", Ui.Small);
+                for (int s = 0; s <= 4; s++)
+                {
+                    string label = s == _creature.GetLevel() - 1 ? $"<color={Ui.Gold}><b>{s}</b></color>" : s.ToString();
+                    if (Widgets.CheatButton(new Rect(x + KeyW + s * 44f, y, 40f, Widgets.RowH - 4f), label)) Nearby.SetStars(_creature, s);
+                }
+                y += Widgets.RowH;
+                Widgets.Note(x, ref y, w, "The game spawns up to 2 stars; 3 and 4 are for testing.");
+            }
+            DrawAround(x, y + 6f, w);
+        }
+
+        // Where you stand, a tape measure between two marks, and how much is loaded around you.
+        static void DrawAround(float x, float y, float w)
+        {
+            var player = Player.m_localPlayer;
+            if (player == null) return;
+            Vector3 me = player.transform.position;
+            Widgets.Header(x, ref y, w, "Around you");
+            Ui.Label(new Rect(x, y, KeyW, LineH), $"<color={Ui.Muted}>You</color>", Ui.Small);
+            Ui.Label(new Rect(x + KeyW, y, w - KeyW, LineH), $"{me.x:0.0}, {me.z:0.0}, height {me.y:0.0}", Ui.Small);
+            y += LineH;
+
+            float bw = 120f;
+            if (GUI.Button(new Rect(x, y, bw, Widgets.RowH - 4f), "Mark A here")) _markA = me;
+            if (GUI.Button(new Rect(x + bw + 6f, y, bw, Widgets.RowH - 4f), "Mark B here")) _markB = me;
+            string measure;
+            if (_markA.HasValue && _markB.HasValue)
+            {
+                Vector3 a = _markA.Value, b = _markB.Value;
+                measure = $"A to B <b>{Vector3.Distance(a, b):0.0} m</b> <color={Ui.Muted}>({Utils.DistanceXZ(a, b):0.0} m flat, {b.y - a.y:+0.0;-0.0} m up)</color>";
+            }
+            else if (_markA.HasValue)
+                measure = $"You to A <b>{Vector3.Distance(me, _markA.Value):0.0} m</b> <color={Ui.Muted}>({Utils.DistanceXZ(me, _markA.Value):0.0} m flat)</color>";
+            else measure = $"<color={Ui.Muted}>Mark a spot, walk, and read the distance.</color>";
+            Ui.Label(new Rect(x + bw * 2f + 16f, y, w - bw * 2f - 16f, LineH + 4f), measure, Ui.Small);
+            y += Widgets.RowH;
+
+            if (Time.unscaledTime - _countedAt > 1f)
+            {
+                _countedAt = Time.unscaledTime;
+                _counts = Nearby.Count(Nearby.Range);
+            }
+            Ui.Label(new Rect(x, y, KeyW, LineH), $"<color={Ui.Muted}>Within {Nearby.Range:0} m</color>", Ui.Small);
+            Ui.Label(new Rect(x + KeyW, y, w - KeyW, LineH),
+                $"{_counts.Pieces} pieces, {_counts.Drops} items on the ground, {_counts.Creatures} creatures, {_counts.Objects} objects in all", Ui.Small);
         }
 
         static void Read()
         {
             Lines.Clear();
             _title = _prefab = null;
+            _creature = null;
             var cam = GameCamera.instance != null ? GameCamera.instance.transform : null;
             var player = Player.m_localPlayer;
             if (cam == null || player == null) return;
@@ -105,6 +161,7 @@ namespace OdinsEye
             if (wnt != null) Add("Health", $"{wnt.GetHealthPercentage() * 100f:0}%");
 
             var character = target.GetComponent<Character>();
+            if (character != null && !character.IsPlayer()) _creature = character;
             if (character != null)
             {
                 Add("Health", $"{character.GetHealth():0} / {character.GetMaxHealth():0}");

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -169,6 +170,25 @@ namespace OdinsEye
 
         // Tooltips starting with "~" are shown as they are in the footer, without "Runs:".
         internal const string OwnCheat = "~Odin's Eye's own cheat: there's no console command for this.";
+
+        // Button for one of Odin's Eye's own cheats: greyed out where the game wouldn't allow a cheat.
+        internal static bool CheatButton(Rect r, string label)
+        {
+            bool was = GUI.enabled;
+            GUI.enabled = was && Cheats.Allowed;
+            bool pressed = GUI.Button(r, new GUIContent(label, OwnCheat));
+            GUI.enabled = was;
+            return pressed;
+        }
+
+        // Two cheat buttons side by side on one row.
+        internal static void CheatPair(float x, ref float y, float w, string left, Action onLeft, string right, Action onRight)
+        {
+            float half = (w - 6f) * 0.5f;
+            if (CheatButton(new Rect(x, y, half, RowH - 4f), left)) onLeft();
+            if (right != null && CheatButton(new Rect(x + half + 6f, y, half, RowH - 4f), right)) onRight();
+            y += RowH;
+        }
 
         // Switch for one of Odin's Eye's own cheats (Cheats): greyed out where the game wouldn't allow a cheat.
         internal static bool CheatSwitch(Rect r, string label, bool on)

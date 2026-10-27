@@ -37,7 +37,10 @@ namespace OdinsEye
             Widgets.Command(new Rect(x, y, w, Widgets.RowH - 4f), "Make neutral creatures angry", "aggravate");
             y += Widgets.RowH;
             Widgets.Command(new Rect(x, y, w, Widgets.RowH - 4f), "Kill tamed creatures", "killtame", "Kill every tamed creature nearby?");
-            y += Widgets.RowH + 6f;
+            y += Widgets.RowH;
+            Widgets.CheatPair(x, ref y, w, "Grow up young", OdinsEye.Nearby.GrowUpYoung, "Heal tames", OdinsEye.Nearby.HealTames);
+            Widgets.Note(x, ref y, w, "Young wolves, boars, lox and askvins become adults.");
+            y += 6f;
 
             Widgets.Header(x, ref y, w, "Behaviour");
             bool passive = ZoneSystem.instance != null && ZoneSystem.instance.GetGlobalKey(GlobalKeys.PassiveMobs);
