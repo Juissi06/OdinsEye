@@ -2,7 +2,7 @@
   "name": "Odins_Eye",
   "version_number": "$version$",
   "website_url": "https://www.nexusmods.com/valheim/mods/4611",
-  "description": "Complete toolpack for Valheim for easy debugging, testing or cheating, I don't judge! Utilizes vanilla Valheim console for an easy to read and use menu for doing whatever you feel like doing.",
+  "description": "Complete toolpack for Valheim for easy debugging, testing or cheating, I don't judge!",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2351"
   ]
