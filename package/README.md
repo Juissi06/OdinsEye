@@ -34,6 +34,8 @@ Cheats work in single player and in worlds you host, once dev commands are on. O
 - Spawn creatures already tamed
 - Spawn bosses
 
+![Odin's Eye: Spawn tab](https://raw.githubusercontent.com/Juissi06/OdinsEye/master/art/screenshots/spawn.png)
+
 ## World
 - Time of day, skip time, weather and wind
 - Game speed, raids and boss progress
@@ -42,12 +44,16 @@ Cheats work in single player and in worlds you host, once dev commands are on. O
 - Unlock all recipes and building pieces, and see, set or remove every world key
 - **Speed up:** grow plants, finish smelters, kilns and fermenters, cook or burn food, fill beehives and regrow berries
 
+![Odin's Eye: World tab](https://raw.githubusercontent.com/Juissi06/OdinsEye/master/art/screenshots/world.png)
+
 ## Teleport
 - Click anywhere on the map to go there
 - Saved spots for each world
 - Shortcuts to Haldor, Hildir, the Bog Witch and every boss altar, and the nearest biome of each kind
 - Go to or bring other players
 - **Back:** return to where you were before your last teleport
+
+![Odin's Eye: Teleport tab](https://raw.githubusercontent.com/Juissi06/OdinsEye/master/art/screenshots/teleport.png)
 
 ## Creatures
 - Tame, make neutral creatures angry, passive monsters and freeze every creature
@@ -60,6 +66,8 @@ Cheats work in single player and in worlds you host, once dev commands are on. O
 - Delete everything around you, set fuel, put out fires, repair your gear
 - Repair every building around you
 - Undo terrain changes and clear snow off your buildings
+
+![Odin's Eye: Admin tab](https://raw.githubusercontent.com/Juissi06/OdinsEye/master/art/screenshots/admin.png)
 
 ## Inspect
 - See what you're looking at: prefab name, owner, health, creature level and what it's after
