@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- World: "Grow plants" makes every crop, sapling and seedling within 30 m finish growing at once. Plants that can't grow where they are (no space, no sky, wrong biome) are left alone and counted, since growing them would make the game remove them.
+
 ## 0.2.1
 - All building pieces: the build menu updates right away when it's switched on or off, instead of after you re-equip the hammer.
 - Custom tab: a command typed in full stays the first suggestion, so Tab adds the space instead of turning "setkey" into "setkeyplayer" or "time" into "timescale".

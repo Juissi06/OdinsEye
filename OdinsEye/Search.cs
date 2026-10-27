@@ -43,6 +43,7 @@ namespace OdinsEye
             E(Tab.World, "Weather", "env rain storm"), E(Tab.World, "Wind", "direction"), E(Tab.World, "Game speed", "timescale slow"),
             E(Tab.World, "Raids", "event randomevent stopevent"), E(Tab.World, "Kill enemies", "killall clean up"),
             E(Tab.World, "Remove drops", "removedrops items fish birds"), E(Tab.World, "No monster spawns", "nospawn"),
+            E(Tab.World, "Grow plants", "crops farm seeds saplings grow instant"),
             E(Tab.World, "Boss progress", "keys defeated"), E(Tab.World, "World modifiers", "difficulty combat resources raids portals death penalty"),
             E(Tab.World, "World presets", "casual hardcore immersive hammer reset default"), E(Tab.World, "World keys", "setkey removekey global key"),
             E(Tab.World, "Unlock all recipes and building pieces", "unlock recipes pieces buildings crafting known"),

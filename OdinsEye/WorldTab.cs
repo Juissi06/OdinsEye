@@ -113,6 +113,12 @@ namespace OdinsEye
             Widgets.CommandRow(x, ref y, w, new[] { "Remove drops", "Remove fish", "Remove birds" },
                 new[] { "removedrops", "removefish", "removebirds" });
             Widgets.Switch(new Rect(x, y + 4f, w, 24f), "No monster spawns", SpawnSystem.m_nospawn, "nospawn on", "nospawn off");
+            y += Widgets.RowH + 2f;
+            bool was = GUI.enabled;
+            GUI.enabled = was && Cheats.Allowed;
+            if (GUI.Button(new Rect(x, y, w, Widgets.RowH - 4f), new GUIContent($"Grow plants within {GrowRange:0} m", Widgets.OwnCheat)))
+                GrowPlants();
+            GUI.enabled = was;
             y += Widgets.RowH + 6f;
 
             Widgets.Header(x, ref y, w, "Boss progress");
@@ -273,5 +279,40 @@ namespace OdinsEye
         }
 
         static string F(float v) => v.ToString("0.###", CultureInfo.InvariantCulture);
+
+        const float GrowRange = 30f;
+
+        // The game has no command for this: crops, saplings and other seedlings around you finish growing now,
+        // through the game's own Plant.Grow. Only healthy ones: Grow deletes a plant that can't grow.
+        static void GrowPlants()
+        {
+            GUIUtility.keyboardControl = 0;
+            var player = Player.m_localPlayer;
+            if (player == null) return;
+            Vector3 p = player.transform.position;
+            var plants = new System.Collections.Generic.List<Plant>();
+            foreach (var obj in SlowUpdate.GetAllInstaces())
+                if (obj is Plant plant && plant != null && Vector3.Distance(plant.transform.position, p) <= GrowRange) plants.Add(plant);
+
+            int grown = 0, stuck = 0;
+            foreach (var plant in plants)
+            {
+                if (plant.GetStatus() != Plant.Status.Healthy)
+                {
+                    stuck++;
+                    continue;
+                }
+                // Only the owner may replace it with the grown one.
+                var view = plant.GetComponent<ZNetView>();
+                if (view == null || !view.IsValid()) continue;
+                if (!view.IsOwner()) view.ClaimOwnership();
+                if (plant.Grow() != null) grown++;
+            }
+            string text = grown == 0 && stuck == 0 ? "no plants nearby"
+                : $"grew {grown}" + (stuck > 0 ? $", {stuck} can't grow where they are (no space, sky or right biome)" : "");
+            Commands.LastCommand = "Grow plants";
+            Commands.LastOutput = text;
+            player.Message(MessageHud.MessageType.TopLeft, char.ToUpper(text[0]) + text.Substring(1));
+        }
     }
 }
