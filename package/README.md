@@ -40,6 +40,7 @@ Cheats work in single player and in worlds you host, once dev commands are on. O
 - **Clean up:** kill enemies, remove drops, stop monsters from spawning
 - World modifiers and presets, like on the world creation screen
 - Unlock all recipes and building pieces, and see, set or remove every world key
+- **Speed up:** grow plants, finish smelters, kilns and fermenters, cook or burn food, fill beehives and regrow berries
 
 ## Teleport
 - Click anywhere on the map to go there
@@ -51,15 +52,19 @@ Cheats work in single player and in worlds you host, once dev commands are on. O
 ## Creatures
 - Tame, make neutral creatures angry, passive monsters and freeze every creature
 - A list of the creatures nearby to tame, untame or kill one by one
+- Grow up young creatures and heal your tames
 
 ## Admin
 - Save the world, kick and ban players, unban
 - Turn portals or the map off, reveal or forget the map
 - Delete everything around you, set fuel, put out fires, repair your gear
 - Repair every building around you
+- Undo terrain changes and clear snow off your buildings
 
 ## Inspect
 - See what you're looking at: prefab name, owner, health, creature level and what it's after
+- Set a creature's stars from 0 to 4
+- Your coordinates, a tape measure and a count of everything loaded around you
 
 ## Custom
 - Make your own buttons from any console line.
