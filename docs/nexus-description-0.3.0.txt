@@ -1,0 +1,83 @@
+[line]
+[size=5][b][color=#e8c77e]Player[/color][/b][/size]
+[list]
+[*]God mode, ghost mode, fly and no build cost as simple switches
+[*][b]Heal:[/b] back to full health and stamina
+[*][b]Fun cheats:[/b] giant or tiny, super jump, super speed, ship speed, infinite stamina, no weight limit, no wear, no fall damage, night vision, one-hit kills, super knockback and instant crafting
+[/list]
+
+[size=5][b][color=#e8c77e]Skills[/color][/b][/size]
+[list]
+[*][b]Every skill with its level, modded skills too:[/b] set any level, raise or reset them all
+[*]Learn up to 25 times faster, all skills or each one on its own, and keep your skills when you die
+[/list]
+
+[size=5][b][color=#e8c77e]Buffs[/color][/b][/size]
+[list]
+[*]Every status effect in the game with its icon, to add or clear
+[*]Pick any boss power with its cooldown reset, and empty your stomach to try other food
+[/list]
+
+[size=5][b][color=#e8c77e]Spawn[/color][/b][/size]
+[list]
+[*]Every item and creature in the game with icons, categories and search
+[*]Pick the amount and quality, or stars for creatures, and spawn it in front of you or straight into your inventory
+[*]Favourites, recent spawns and the game's premade item sets
+[*]Spawn creatures already tamed
+[*]Spawn bosses
+[/list]
+
+[size=5][b][color=#e8c77e]World[/color][/b][/size]
+[list]
+[*]Time of day, skip time, weather and wind
+[*]Game speed, raids and boss progress
+[*][b]Clean up:[/b] kill enemies, remove drops, stop monsters from spawning
+[*]World modifiers and presets, like on the world creation screen
+[*]Unlock all recipes and building pieces, and see, set or remove every world key
+[*][b]Speed up:[/b] grow plants, finish smelters, kilns and fermenters, cook or burn food, fill beehives and regrow berries
+[/list]
+
+[size=5][b][color=#e8c77e]Teleport[/color][/b][/size]
+[list]
+[*]Click anywhere on the map to go there
+[*]Saved spots for each world
+[*]Shortcuts to Haldor, Hildir, the Bog Witch and every boss altar, and the nearest biome of each kind
+[*]Go to or bring other players
+[*][b]Back:[/b] return to where you were before your last teleport
+[/list]
+
+[size=5][b][color=#e8c77e]Creatures[/color][/b][/size]
+[list]
+[*]Tame, make neutral creatures angry, passive monsters and freeze every creature
+[*]A list of the creatures nearby to tame, untame or kill one by one
+[*]Grow up young creatures and heal your tames
+[/list]
+
+[size=5][b][color=#e8c77e]Admin[/color][/b][/size]
+[list]
+[*]Save the world, kick and ban players, unban
+[*]Turn portals or the map off, reveal or forget the map
+[*]Delete everything around you, set fuel, put out fires, repair your gear
+[*]Repair every building around you
+[*]Undo terrain changes and clear snow off your buildings
+[/list]
+
+[size=5][b][color=#e8c77e]Inspect[/color][/b][/size]
+[list]
+[*][b]See what you're looking at:[/b] prefab name, owner, health, creature level and what it's after
+[*]Set a creature's stars from 0 to 4
+[*]Your coordinates, a tape measure and a count of everything loaded around you
+[/list]
+
+[size=5][b][color=#e8c77e]Custom[/color][/b][/size]
+[list]
+[*]Make your own buttons from any console line.
+[/list]
+
+[line]
+[size=5][b][color=#e8c77e]Default keys[/color][/b][/size]
+[list]
+[*][b]Home[/b] open and close the window
+[*][b]Esc[/b] close the window
+[*]Hotkeys for god mode, ghost mode, fly, no build cost and Back: set them in the config
+[/list]
